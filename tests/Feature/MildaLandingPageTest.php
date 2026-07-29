@@ -6,5 +6,6 @@ test('the MILDA prototype is served from the home page', function () {
         ->assertSee('Learn to verify.')
         ->assertSee('Explore the prototype')
         ->assertSee('Student Dashboard')
-        ->assertSee('MILDA Course Modules');
+        ->assertSee('MILDA Course Modules')
+        ->assertSee('Download Syllabus');
 });

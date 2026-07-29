@@ -216,6 +216,7 @@
     .hero h3 { margin:16px 0 11px; font-size:clamp(30px,4vw,48px);line-height:1.04;letter-spacing:-.035em;max-width:780px; }
     .hero p { margin:0 0 20px;color:rgba(255,255,255,.76);line-height:1.65;max-width:760px; }
     .hero-actions { display:flex;flex-wrap:wrap;gap:10px; }
+    .download-link { text-decoration:none; }
     .btn { padding:11px 15px;border-radius:12px;font-weight:780;transition:.18s ease;display:inline-flex;align-items:center;gap:8px;justify-content:center; }
     .btn:hover { transform:translateY(-1px); }
     .btn-primary { background:#ffffff;color:var(--primary);border:1px solid #ffffff; }
