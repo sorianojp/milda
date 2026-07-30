@@ -49,6 +49,18 @@
       ADMIN: "admin"
     }),
 
+    ROLE_VIEWS: Object.freeze({
+      student: Object.freeze([
+        "dashboard",
+        "learn",
+        "verify",
+        "community",
+        "leaderboard"
+      ]),
+      instructor: Object.freeze(["instructor"]),
+      admin: Object.freeze(["admin"])
+    }),
+
     MODULE_STATES: Object.freeze({
       ALL: "all",
       COMPLETED: "completed",

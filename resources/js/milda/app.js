@@ -9,6 +9,7 @@
     DEMO_CLAIMS,
     LESSON_OBJECTIVES,
     ROLES,
+    ROLE_VIEWS,
     TIMING,
     VIEW_INFO
   } = MILDA.CONSTANTS;
@@ -28,7 +29,27 @@
     updateCourseProgress
   } = MILDA.renderers;
 
+  function canAccessView(viewId) {
+    const allowedViews = ROLE_VIEWS[MILDA.state.activeRole];
+
+    return !allowedViews || allowedViews.includes(viewId);
+  }
+
+  function applyRolePermissions(role) {
+    queryAll("[data-roles]").forEach((element) => {
+      const allowedRoles = element.dataset.roles.split(/\s+/);
+
+      element.classList.toggle("role-hidden", !allowedRoles.includes(role));
+    });
+  }
+
   function showView(viewId) {
+    if (!canAccessView(viewId)) {
+      toast("This page is not available for the selected role");
+
+      return;
+    }
+
     queryAll(".view").forEach((view) => {
       view.classList.toggle("active", view.id === viewId);
     });
@@ -51,13 +72,13 @@
   }
 
   function enterRole(role) {
-    getById("introScreen")?.classList.add("dismissed");
-
-    const roleSelect = getById("roleSelect");
-
-    if (roleSelect) {
-      roleSelect.value = role;
+    if (!ROLE_VIEWS[role]) {
+      return;
     }
+
+    MILDA.state.activeRole = role;
+    applyRolePermissions(role);
+    getById("introScreen")?.classList.add("dismissed");
 
     if (role === ROLES.INSTRUCTOR) {
       showView("instructor");
@@ -68,6 +89,20 @@
     }
 
     toast(`${capitalize(role)} prototype loaded`);
+  }
+
+  function exitRole() {
+    MILDA.state.activeRole = null;
+
+    getById("introScreen")?.classList.remove("dismissed");
+    getById("sidebar")?.classList.remove("open");
+
+    queryAll(".modal-backdrop.open").forEach((modal) => {
+      modal.classList.remove("open");
+    });
+
+    closeNotificationDrawer();
+    queryAll("[data-enter]")[0]?.focus();
   }
 
   function openLesson(index) {
@@ -239,9 +274,7 @@
       button.addEventListener("click", () => showView(button.dataset.go));
     });
 
-    addListener("roleSelect", "change", (event) => {
-      enterRole(event.target.value);
-    });
+    addListener("exitRoleBtn", "click", exitRole);
 
     addListener("mobileMenu", "click", () => {
       getById("sidebar")?.classList.toggle("open");
@@ -455,6 +488,7 @@
     init,
     showView,
     enterRole,
+    exitRole,
     openLesson,
     runAnalysis
   });

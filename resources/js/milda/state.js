@@ -12,6 +12,7 @@
       votes: [...item.votes]
     })),
     activeModule: 6,
+    activeRole: null,
     moduleFilter: MODULE_STATES.ALL,
     communityFilter: COMMUNITY_STATES.ALL
   };

@@ -36,28 +36,28 @@
 <div class="app-shell">
 <aside class="sidebar" id="sidebar">
 <div class="brand"><div class="brand-mark">M</div><div><h1>MILDA</h1><p>Learn. Verify. Share Responsibly.</p></div></div>
-<div class="nav-label">Learning</div>
-<nav class="nav">
+<div class="nav-label" data-roles="student">Learning</div>
+<nav class="nav" data-roles="student">
 <button class="active" data-view="dashboard"><svg><use href="#i-home"></use></svg>Dashboard</button>
 <button data-view="learn"><svg><use href="#i-book"></use></svg>Course Modules</button>
 <button data-view="verify"><svg><use href="#i-check"></use></svg>Verify Content</button>
 </nav>
-<div class="nav-label">Community</div>
-<nav class="nav">
+<div class="nav-label" data-roles="student">Community</div>
+<nav class="nav" data-roles="student">
 <button data-view="community"><svg><use href="#i-users"></use></svg>Verification Hub</button>
 <button data-view="leaderboard"><svg><use href="#i-award"></use></svg>Leaderboard &amp; Badge</button>
 </nav>
-<div class="nav-label">Management</div>
-<nav class="nav">
-<button data-view="instructor"><svg><use href="#i-chart"></use></svg>Instructor</button>
-<button data-view="admin"><svg><use href="#i-shield"></use></svg>Admin &amp; Safeguards</button>
+<div class="nav-label" data-roles="instructor admin">Management</div>
+<nav class="nav" data-roles="instructor admin">
+<button data-roles="instructor" data-view="instructor"><svg><use href="#i-chart"></use></svg>Instructor</button>
+<button data-roles="admin" data-view="admin"><svg><use href="#i-shield"></use></svg>Admin &amp; Safeguards</button>
 </nav>
-<div class="sidebar-progress"><strong>Badge readiness · 58%</strong><div class="line"><span></span></div><p>Complete all course modules and the Digital Verification Portfolio.</p></div>
+<div class="sidebar-progress" data-roles="student"><strong>Badge readiness · 58%</strong><div class="line"><span></span></div><p>Complete all course modules and the Digital Verification Portfolio.</p></div>
 </aside>
 <main class="main">
 <header class="topbar">
 <div class="top-left"><button aria-label="Open navigation" class="mobile-menu" id="mobileMenu"><svg><use href="#i-menu"></use></svg></button><div class="page-title"><h2 id="pageHeading">Student Dashboard</h2><p id="pageSubheading">Your learning and verification progress</p></div></div>
-<div class="top-actions"><button class="btn btn-outline prototype-label" id="tourBtn"><svg><use href="#i-spark"></use></svg>Demo Tour</button><select aria-label="Preview role" class="role-select" id="roleSelect"><option value="student">Student View</option><option value="instructor">Instructor View</option><option value="admin">Admin View</option></select><button aria-label="Notifications" class="icon-btn" id="notificationBtn"><svg><use href="#i-bell"></use></svg><span class="dot"></span></button><div class="avatar">JC</div></div>
+<div class="top-actions"><button class="btn btn-outline prototype-label" data-roles="student" id="tourBtn"><svg><use href="#i-spark"></use></svg>Demo Tour</button><button aria-label="Exit current role view" class="btn btn-danger exit-role-btn" id="exitRoleBtn" type="button"><span aria-hidden="true" class="stop-icon"></span><span class="exit-role-label">Exit View</span></button><button aria-label="Notifications" class="icon-btn" id="notificationBtn"><svg><use href="#i-bell"></use></svg><span class="dot"></span></button><div class="avatar">JC</div></div>
 </header>
 <div class="content">
 <section class="view active" id="dashboard">
