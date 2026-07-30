@@ -63,7 +63,7 @@
     setText("pageHeading", viewText[0]);
     setText("pageSubheading", viewText[1]);
 
-    getById("sidebar")?.classList.remove("open");
+    closeMobileNavigation();
 
     global.scrollTo({
       top: 0,
@@ -95,7 +95,7 @@
     MILDA.state.activeRole = null;
 
     getById("introScreen")?.classList.remove("dismissed");
-    getById("sidebar")?.classList.remove("open");
+    closeMobileNavigation();
 
     queryAll(".modal-backdrop.open").forEach((modal) => {
       modal.classList.remove("open");
@@ -261,6 +261,17 @@
     button.closest(".modal-backdrop")?.classList.remove("open");
   }
 
+  function setMobileNavigation(open) {
+    getById("sidebar")?.classList.toggle("open", open);
+    getById("sidebarBackdrop")?.classList.toggle("open", open);
+    getById("mobileMenu")?.setAttribute("aria-expanded", String(open));
+    document.body.classList.toggle("mobile-nav-open", open);
+  }
+
+  function closeMobileNavigation() {
+    setMobileNavigation(false);
+  }
+
   function bindNavigationEvents() {
     queryAll("[data-enter]").forEach((button) => {
       button.addEventListener("click", () => enterRole(button.dataset.enter));
@@ -277,8 +288,10 @@
     addListener("exitRoleBtn", "click", exitRole);
 
     addListener("mobileMenu", "click", () => {
-      getById("sidebar")?.classList.toggle("open");
+      setMobileNavigation(!getById("sidebar")?.classList.contains("open"));
     });
+
+    addListener("sidebarBackdrop", "click", closeMobileNavigation);
   }
 
   function bindDrawerAndModalEvents() {
@@ -322,6 +335,7 @@
       });
 
       closeNotificationDrawer();
+      closeMobileNavigation();
     });
   }
 

@@ -8,6 +8,7 @@ test('the MILDA prototype is served from the home page', function () {
         ->assertSee('Student Dashboard')
         ->assertSee('MILDA Course Modules')
         ->assertSee('Download Syllabus')
+        ->assertSee('Download MILDA Course Syllabus')
         ->assertSee('Exit View')
         ->assertSee('data-roles="student"', false)
         ->assertSee('data-roles="instructor"', false)
