@@ -160,7 +160,13 @@ function ChecklistItem({
     );
 }
 
-function IntroScreen({ onEnter }: { onEnter: (role: Role) => void }) {
+function IntroScreen({
+    onEnter,
+    syllabusUrl,
+}: {
+    onEnter: (role: Role) => void;
+    syllabusUrl: string;
+}) {
     const roles: {
         role: Role;
         title: string;
@@ -242,6 +248,14 @@ function IntroScreen({ onEnter }: { onEnter: (role: Role) => void }) {
                             ),
                         )}
                     </div>
+                    <a
+                        className="btn btn-dark download-link intro-download"
+                        download
+                        href={syllabusUrl}
+                    >
+                        <FileText />
+                        Download MILDA Course Syllabus
+                    </a>
                     <div className="intro-note">
                         High-fidelity clickable prototype · Sample data only
                     </div>
@@ -260,6 +274,7 @@ function DashboardView({
     showView,
     openLesson,
     analyzeQuickClaim,
+    syllabusUrl,
     toast,
 }: {
     courseProgress: number;
@@ -270,6 +285,7 @@ function DashboardView({
     showView: (view: View) => void;
     openLesson: (index: number) => void;
     analyzeQuickClaim: () => void;
+    syllabusUrl: string;
     toast: (message: string) => void;
 }) {
     return (
@@ -299,6 +315,14 @@ function DashboardView({
                             <BookOpen />
                             Continue Course
                         </button>
+                        <a
+                            className="btn btn-ghost download-link"
+                            download
+                            href={syllabusUrl}
+                        >
+                            <FileText />
+                            Download Syllabus
+                        </a>
                         <button
                             className="btn btn-ghost"
                             onClick={() => showView('verify')}
@@ -1345,6 +1369,19 @@ export default function Milda({ syllabusUrl }: MildaProps) {
 
     const activeLesson = modules[activeModule];
     const [heading, subheading] = viewInfo[view];
+    const visibleNavGroups = navGroups
+        .filter(({ label }) =>
+            role === 'student'
+                ? label !== 'Management'
+                : label === 'Management',
+        )
+        .map((group) => ({
+            ...group,
+            items:
+                group.label === 'Management'
+                    ? group.items.filter((item) => item.view === role)
+                    : group.items,
+        }));
 
     const toast = (message: string) => {
         const id = Date.now() + Math.random();
@@ -1495,7 +1532,9 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                 />
             </Head>
 
-            {introOpen && <IntroScreen onEnter={enterRole} />}
+            {introOpen && (
+                <IntroScreen onEnter={enterRole} syllabusUrl={syllabusUrl} />
+            )}
 
             <div className="app-shell">
                 <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
@@ -1506,7 +1545,7 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                             <p>Learn. Verify. Share Responsibly.</p>
                         </div>
                     </div>
-                    {navGroups.map((group) => (
+                    {visibleNavGroups.map((group) => (
                         <div className="nav-group" key={group.label}>
                             <div className="nav-label">{group.label}</div>
                             <nav className="nav">
@@ -1526,16 +1565,18 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                             </nav>
                         </div>
                     ))}
-                    <div className="sidebar-progress">
-                        <strong>Badge readiness · {courseProgress}%</strong>
-                        <div className="line">
-                            <span style={{ width: `${courseProgress}%` }} />
+                    {role === 'student' && (
+                        <div className="sidebar-progress">
+                            <strong>Badge readiness · {courseProgress}%</strong>
+                            <div className="line">
+                                <span style={{ width: `${courseProgress}%` }} />
+                            </div>
+                            <p>
+                                Complete all course modules and the Digital
+                                Verification Portfolio.
+                            </p>
                         </div>
-                        <p>
-                            Complete all course modules and the Digital
-                            Verification Portfolio.
-                        </p>
-                    </div>
+                    )}
                 </aside>
                 <main className="main">
                     <header className="topbar">
@@ -1556,13 +1597,34 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                             </div>
                         </div>
                         <div className="top-actions">
+                            {role === 'student' && (
+                                <button
+                                    className="btn btn-outline prototype-label"
+                                    onClick={() => setModal('tour')}
+                                    type="button"
+                                >
+                                    <Sparkles />
+                                    Demo Tour
+                                </button>
+                            )}
                             <button
-                                className="btn btn-outline prototype-label"
-                                onClick={() => setModal('tour')}
+                                aria-label="Exit current role view"
+                                className="btn btn-danger exit-role-btn"
+                                onClick={() => {
+                                    setDrawerOpen(false);
+                                    setModal(null);
+                                    setSidebarOpen(false);
+                                    setIntroOpen(true);
+                                }}
                                 type="button"
                             >
-                                <Sparkles />
-                                Demo Tour
+                                <span
+                                    aria-hidden="true"
+                                    className="stop-icon"
+                                />
+                                <span className="exit-role-label">
+                                    Exit View
+                                </span>
                             </button>
                             <select
                                 aria-label="Preview role"
@@ -1601,6 +1663,7 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                                 setQuickClaim={setQuickClaim}
                                 setQuickUrl={setQuickUrl}
                                 showView={showView}
+                                syllabusUrl={syllabusUrl}
                                 toast={toast}
                             />
                         )}

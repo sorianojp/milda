@@ -322,6 +322,7 @@ input,textarea,select.form-control { width:100%;max-width:100%;border:1px solid 
     .tab.active { color:var(--blue);border-color:var(--primary); }
     .upload-zone { border:2px dashed #b9d0dd;border-radius:16px;padding:24px;text-align:center;background:var(--surface-2);margin-top:12px; }
     .upload-zone svg { width:32px;height:32px;color:var(--primary); }
+    .form-actions { display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px; }
     .workflow { display:grid;gap:11px; }
     .workflow-step { display:grid;grid-template-columns:34px 1fr;gap:11px;align-items:flex-start; }
     .step-n { width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--primary);color:#fff;font-size:11px;font-weight:850; }
@@ -390,6 +391,7 @@ input,textarea,select.form-control { width:100%;max-width:100%;border:1px solid 
     .quiz-options { display:grid;gap:8px;margin-top:10px; }
     .quiz-option { padding:10px;border-radius:10px;text-align:left;background:var(--surface);border:1px solid var(--line);color:var(--ink); }
     .quiz-option.correct { border-color:var(--green);background:#e9f7ef;color:var(--green); }
+    .modal-actions { display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:16px; }
 
     .tour-step { display:grid;grid-template-columns:48px 1fr;gap:13px;align-items:flex-start;padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--surface-2);margin-bottom:9px; }
     .tour-step .icon { width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--surface-3);color:var(--blue); }
@@ -471,6 +473,7 @@ input,textarea,select.form-control { width:100%;max-width:100%;border:1px solid 
       .tab-row { max-width:100%;overflow-x:auto;overscroll-behavior-x:contain; }
       .tab { flex:1 0 auto;white-space:nowrap; }
       .upload-zone { padding:18px 12px; }
+      .form-actions .btn { flex:1 1 auto; }
       .result-body { padding:15px; }
       .queue-item { grid-template-columns:1fr; }
       .queue-item .btn { width:100%; }

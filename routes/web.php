@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\CourseMaterialController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
-Route::view('/', 'milda')->name('home');
+Route::get('/', fn () => Inertia::render('milda', [
+    'syllabusUrl' => route('course-materials.syllabus'),
+]))->name('home');
 Route::get('/course-materials/milda-syllabus', [CourseMaterialController::class, 'syllabus'])
     ->name('course-materials.syllabus');
 
