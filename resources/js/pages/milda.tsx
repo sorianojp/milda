@@ -289,18 +289,18 @@ function DashboardView({
     toast: (message: string) => void;
 }) {
     return (
-        <section className="view active">
+        <section className="view active dashboard-view">
             <div className="hero">
                 <div className="hero-copy">
                     <span className="eyebrow">
                         <Sparkles />
                         MILDA Course Program
                     </span>
-                    <h3>
+                    <h3><b>
                         Welcome back, Juan.
-                        <br />
+                        
                         Verify before you share.
-                    </h3>
+                    </b></h3><br />
                     <p>
                         Continue your course, complete a real-world verification
                         mission, and build the evidence-based habits required to
@@ -880,7 +880,7 @@ function CommunityView({
     toast: (message: string) => void;
 }) {
     return (
-        <section className="view active">
+        <section className="view active community-view">
             <div className="section-heading">
                 <div>
                     <h2>Community Verification Hub</h2>
@@ -1520,12 +1520,7 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                     content="MILDA is a Media and Information Literacy ecosystem for structured learning, AI-assisted guidance, and evidence-based community verification."
                     name="description"
                 />
-                <link href="https://fonts.googleapis.com" rel="preconnect" />
-                <link
-                    crossOrigin=""
-                    href="https://fonts.gstatic.com"
-                    rel="preconnect"
-                />
+
                 <link
                     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap"
                     rel="stylesheet"

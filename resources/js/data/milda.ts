@@ -1,9 +1,3 @@
-export type CourseModule = {
-    title: string;
-    description: string;
-    progress: number;
-};
-
 export type CommunityItem = {
     status: 'verified' | 'review' | 'media';
     tag: string;
@@ -26,78 +20,382 @@ export type AnalysisScenario = {
     guidance: string;
 };
 
+export type LessonObjective = {
+    title: string;
+    description: string;
+};
+
+export type CourseModule = {
+    title: string;
+    description: string;
+    progress: number;
+    objectives: LessonObjective[];
+    practicalActivity: string;
+};
+
 export const courseModules: CourseModule[] = [
     {
         title: 'Introduction to Media and Information Literacy',
         description:
             'Core MIL concepts, information ecosystems, and responsible digital participation.',
         progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
+    // ...rest of the modules (2–12) — add `objectives` and `practicalActivity`
+    // to each once you're ready to customize them. For now, give them the
+    // placeholder below so nothing breaks:
     {
-        title: 'Misinformation, Disinformation, and Malinformation',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Identify different forms of information disorder in digital contexts.',
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
         progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'Information Disorder and Online Sharing Behavior',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Understand how misleading content spreads and why people share it.',
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
         progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'Evaluating Online Sources and Claims',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Apply credibility indicators and source-evaluation criteria.',
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
         progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'Fact-Checking and Verification Techniques',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Practice source triangulation, reverse image search, and evidence checking.',
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
         progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'Community Verification and Reporting',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Report suspicious content and contribute trusted references responsibly.',
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
         progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'AI-Generated Content and AI Hallucinations',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Recognize AI limitations, hallucinations, and possible synthetic content.',
-        progress: 60,
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
+        progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'Deepfakes and Manipulated Media',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Analyze synthetic media, visual artifacts, and edited images or videos.',
-        progress: 25,
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
+        progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'Responsible Sharing and Digital Citizenship',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Develop ethical habits for communication and information sharing.',
-        progress: 0,
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
+        progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'Ethics of AI and Online Information',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Examine privacy, bias, transparency, accountability, and intellectual honesty.',
-        progress: 0,
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
+        progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'MILDA Practical Verification Activities',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Complete guided verification missions using MILDA digital tools.',
-        progress: 0,
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
+        progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
     {
-        title: 'Digital Verification Portfolio',
+        title: 'Introduction to Media and Information Literacy',
         description:
-            'Prepare and present the final evidence-based verification portfolio.',
-        progress: 0,
+            'Core MIL concepts, information ecosystems, and responsible digital participation.',
+        progress: 100,
+        objectives: [
+            {
+                title: 'Understand',
+                description:
+                    'Understand the meaning, importance, and scope of Media and Information Literacy (MIL) and recognize its role in navigating today\'s digital world.',
+            },
+            {
+                title: 'Practice',
+                description:
+                    'Apply the core competencies of MIL by identifying reliable information sources and distinguishing trustworthy content from misleading information.',
+            },
+            {
+                title: 'Evaluate',
+                description:
+                    'Assess how Media and Information Literacy helps individuals make informed decisions, avoid misinformation, and use media responsibly.',
+            },
+            {
+                title: 'Reflect',
+                description:
+                    'Reflect on your own media consumption habits and identify ways to become a more critical, ethical, and responsible consumer and creator of information.',
+            },
+        ],
+        practicalActivity:
+            'Analyze the real-life scenario about Maria and answer the question: What did Maria do that demonstrates Media and Information Literacy? Then, describe a similar situation in which you verified information before believing or sharing it, explaining which MIL competencies you used.',
     },
 ];
 

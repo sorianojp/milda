@@ -160,7 +160,7 @@
     .brand-mark { width:44px;height:44px;border-radius:14px;font-size:20px; }
     .brand h1 { margin:0; font-size:19px; }
     .brand p { margin:3px 0 0; font-size:10px; color:rgba(255,255,255,.65); }
-    .nav-label { padding:0 10px; font-size:10px; text-transform:uppercase; letter-spacing:.13em; color:rgba(255,255,255,.48); }
+    .nav-label { padding:0 10px; font-size:10px; text-transform:uppercase; letter-spacing:.13em; color:rgba(255,255,255,.48); margin-bottom: 10px; }
     .nav { display:grid; gap:6px; }
     .nav button {
       width:100%;
@@ -213,7 +213,9 @@
     .stop-icon { width:11px;height:11px;border-radius:2px;background:currentColor;flex:0 0 auto; }
     .icon-btn { width:40px;height:40px;border-radius:12px;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);display:grid;place-items:center;position:relative; }
     .icon-btn .dot { position:absolute;right:8px;top:7px;width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid var(--surface); }
-    .role-select { border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 10px;border-radius:11px; }
+    .role-select { appearance: none; -webkit-appearance: none; border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 12px;border-radius:11px; font-weight: 700; font-size: 16px; cursor: pointer; transition: .18s ease; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'><path d='M1 1L5 5L9 1' stroke='%2366798a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>"); background-repeat: no-repeat; background-position: right 10px center; min-width: 150px; }
+    .role-select:hover { border-color: var(--primary); }
+    .role-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(5,5,106,.12); }
     .avatar { width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:#fff;font-weight:850;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line); }
 
     .content { max-width:1500px; margin:0 auto; padding:26px; }
@@ -247,6 +249,9 @@
     .btn-dark { background:var(--primary);color:#fff; }
     .btn-outline { background:var(--surface);color:var(--ink);border:1px solid var(--line); }
     .btn-danger { background:#fbeaec;color:var(--red);border:1px solid #f2cdd1; }
+    .prototype-label:hover, .icon-btn:hover { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(5,5,106,.12); }
+    .exit-role-btn:hover { border-color: var(--primary); }
+    .avatar:hover { box-shadow: 0 0 0 1px var(--primary); cursor: pointer;}
     .hero-progress { align-self:center;display:grid;grid-template-columns:145px 1fr;gap:18px;align-items:center;padding:18px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.09);border-radius:20px;backdrop-filter:blur(10px); }
     .progress-ring { --p:58; width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:transparent;border:14px solid rgba(255,255,255,.22);border-top-color:#fff;border-right-color:#fff;position:relative; }
     .progress-ring::before { content:"";width:102px;height:102px;border-radius:50%;background:var(--primary);position:absolute; }
