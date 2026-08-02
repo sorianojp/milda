@@ -1,5 +1,11 @@
+export type CommunityLink = {
+    platform: 'facebook' | 'instagram' | 'twitter' | 'tiktok' | 'youtube' | 'web'; // add youtube
+    label: string;
+    url: string;
+};
+
 export type CommunityItem = {
-    status: 'verified' | 'review' | 'media';
+    status: 'verified' | 'review' | 'media' | 'reported'; // add 'reported'
     tag: string;
     tagClass: string;
     reports: string;
@@ -7,6 +13,7 @@ export type CommunityItem = {
     text: string;
     note: string;
     votes: [number, number, number];
+    links: CommunityLink[];
 };
 
 export type AnalysisScenario = {
@@ -1383,10 +1390,22 @@ export const communityItems: CommunityItem[] = [
         tag: 'Needs Verification',
         tagClass: 'tag-amber',
         reports: '4 reports',
-        title: '“Classes are suspended tomorrow in all schools.”',
+        title: '"Classes are suspended tomorrow in all schools."',
         text: 'No city or school authority is cited in the original post.',
         note: 'Evidence needed: official advisory from the school, city government, or disaster office.',
         votes: [12, 48, 17],
+        links: [
+            {
+                platform: 'facebook',
+                label: 'Facebook Viral Post',
+                url: 'facebook.com/groups/deped-announcements/...',
+            },
+            {
+                platform: 'instagram',
+                label: 'Instagram Story Snapshot',
+                url: 'instagram.com/p/C3x9kL1S89u/',
+            },
+        ],
     },
     {
         status: 'verified',
@@ -1397,46 +1416,62 @@ export const communityItems: CommunityItem[] = [
         text: 'The date matches the official university announcement and registrar notice.',
         note: 'Moderation note: supported by two independent official records.',
         votes: [86, 4, 1],
+        links: [
+            {
+                platform: 'web',
+                label: 'University Portal Notice',
+                url: 'registrar.university.edu/scholarships/2026-upda...',
+            },
+            {
+                platform: 'facebook',
+                label: 'Official FB Page Post',
+                url: 'facebook.com/StateUniversityOfficial/posts/102...',
+            },
+        ],
     },
     {
         status: 'media',
         tag: 'Possible Edited Media',
         tagClass: 'tag-purple',
         reports: 'Under review',
-        title: 'Viral image of a public announcement',
-        text: 'Font alignment and image artifacts require closer examination.',
-        note: 'AI advisory: possible edits detected. This is not a final determination.',
-        votes: [8, 39, 23],
+        title: 'Viral photo of public landmark flood levels',
+        text: 'Metadata suggests contrast manipulation and digital alteration in lower left quad.',
+        note: 'Moderation note: Reverse image search matches an origin photo from 2021.',
+        votes: [3, 62, 104],
+        links: [
+            {
+                platform: 'twitter',
+                label: 'X (Twitter) Viral Tweet',
+                url: 'x.com/weather_watch_ph/status/1782910293',
+            },
+            {
+                platform: 'tiktok',
+                label: 'TikTok Video Clip',
+                url: 'tiktok.com/@cityupdates/video/7391829012',
+            },
+        ],
     },
     {
-        status: 'review',
+        status: 'reported',
         tag: 'Frequently Reported',
         tagClass: 'tag-red',
         reports: '11 reports',
-        title: 'Unverified medical cure shared in a group chat',
-        text: 'The claim provides no clinical source or health-agency guidance.',
-        note: 'High-impact claims require qualified, authoritative evidence.',
-        votes: [3, 31, 54],
-    },
-    {
-        status: 'verified',
-        tag: 'Community Verified',
-        tagClass: 'tag-green',
-        reports: '2 official sources',
-        title: 'Campus registration schedule',
-        text: 'The dates match the registrar and official university channels.',
-        note: 'Verified through original institutional announcements.',
-        votes: [64, 2, 0],
-    },
-    {
-        status: 'media',
-        tag: 'Possible AI-Generated',
-        tagClass: 'tag-purple',
-        reports: 'AI analysis available',
-        title: 'Synthetic-looking portrait used in a fake endorsement',
-        text: 'The source account and original image cannot yet be confirmed.',
-        note: 'Manual source tracing is required before any final status.',
-        votes: [6, 44, 21],
+        title: 'Unverified medical cure shared in social groups',
+        text: 'Promotes home concoction with false claims of immediate viral immunity.',
+        note: 'Health Advisory: FDA and DOH have published warnings regarding this product.',
+        votes: [2, 15, 142],
+        links: [
+            {
+                platform: 'facebook',
+                label: 'Facebook Health Group',
+                url: 'facebook.com/groups/healthtips/posts/3819203',
+            },
+            {
+                platform: 'youtube',
+                label: 'YouTube Short Demo',
+                url: 'youtube.com/shorts/9xKw82aLmn0',
+            },
+        ],
     },
 ];
 
