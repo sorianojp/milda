@@ -25,7 +25,6 @@ import {
     communityItems as initialCommunityItems,
     courseModules as initialCourseModules,
     demoClaim,
-    lessonObjectives,
 } from '@/data/milda';
 import type { AnalysisScenario, CommunityItem } from '@/data/milda';
 import '../../css/milda.css';
@@ -206,11 +205,11 @@ function IntroScreen({
                             </div>
                         </div>
                     </div>
-                    <h1>
+                    <h1><b>
                         Learn to verify.
                         <br />
                         Build digital trust.
-                    </h1>
+                    </b></h1>
                     <p>
                         MILDA is a course-centered Media and Information
                         Literacy ecosystem that combines structured learning,
@@ -225,7 +224,7 @@ function IntroScreen({
                     </div>
                 </div>
                 <div className="role-panel">
-                    <h2>Explore the prototype</h2>
+                    <h2><b>Explore the prototype</b></h2>
                     <p>Select a role to preview the MILDA experience.</p>
                     <div className="role-grid">
                         {roles.map(
@@ -308,7 +307,7 @@ function DashboardView({
                     </p>
                     <div className="hero-actions">
                         <button
-                            className="btn btn-primary"
+                            className="btn btn-ghost"
                             onClick={() => showView('learn')}
                             type="button"
                         >
@@ -336,7 +335,7 @@ function DashboardView({
                 <div className="hero-progress">
                     <div className="progress-ring">
                         <strong>{courseProgress}%</strong>
-                        <span>course complete</span>
+                        <span>progress</span>
                     </div>
                     <div>
                         <h4>Next: AI-Generated Content</h4>
@@ -521,22 +520,7 @@ function ModulesView({
     return (
         <section className="view active">
             <div className="section-heading">
-                <div>
-                    <h2>MILDA Course Modules</h2>
-                    <p>
-                        Complete the structured course and Digital Verification
-                        Portfolio to earn the contributor badge.
-                    </p>
-                </div>
                 <div className="filter-row">
-                    <a
-                        className="btn btn-dark download-link"
-                        download
-                        href={syllabusUrl}
-                    >
-                        <FileText />
-                        Download Course Syllabus
-                    </a>
                     {(
                         [
                             ['all', 'All'],
@@ -1353,9 +1337,10 @@ export default function Milda({ syllabusUrl }: MildaProps) {
         analysisScenarios.review,
     );
     const [resultVisible, setResultVisible] = useState(false);
-    const [selectedQuizAnswer, setSelectedQuizAnswer] = useState<number | null>(
-        null,
-    );
+    const [quizAnswersByModule, setQuizAnswersByModule] = useState<
+        Record<number, Record<number, 'fact' | 'fake'>>
+    >({});
+    const quizAnswers = quizAnswersByModule[activeModule] ?? {};
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
     const courseProgress = useMemo(
@@ -1417,7 +1402,6 @@ export default function Milda({ syllabusUrl }: MildaProps) {
 
     const openLesson = (index: number) => {
         setActiveModule(index);
-        setSelectedQuizAnswer(null);
         setModal('lesson');
     };
 
@@ -1436,6 +1420,12 @@ export default function Milda({ syllabusUrl }: MildaProps) {
         setModal(null);
         toast(`Module ${activeModule + 1} marked complete`);
     };
+
+    const quizPassed = activeLesson.quiz
+        ? activeLesson.quiz.statements.every(
+            (statement, index) => quizAnswers[index] === statement.answer,
+        )
+        : true;
 
     const determineAnalysis = (claim: string) => {
         const normalized = claim.toLowerCase();
@@ -1794,7 +1784,7 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                         </button>
                     </div>
                     <div className="lesson-objectives">
-                        {lessonObjectives.map((objective) => (
+                        {activeLesson.objectives.map((objective) => (
                             <div className="objective" key={objective.title}>
                                 <strong>{objective.title}</strong>
                                 <br />
@@ -1804,40 +1794,171 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                             </div>
                         ))}
                     </div>
+
+                    {activeLesson.content && (
+                        <div className="lesson-content">
+                            <div className="lesson-content-box">
+                                <div className="lesson-content-label">
+                                    {activeLesson.content.objectivesLabel}
+                                </div>
+                                <ul>
+                                    {activeLesson.content.objectives.map((item) => (
+                                        <li key={item}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <blockquote className="lesson-intro">
+                                <p className="lesson-intro-text">
+                                    {activeLesson.content.intro}
+                                </p>
+                                {activeLesson.content.introQuestion && (
+                                    <p className="lesson-intro-question">
+                                        {activeLesson.content.introQuestion}
+                                    </p>
+                                )}
+                            </blockquote>
+                            {activeLesson.content.blocks.map((block, index) => {
+                                if (block.type === 'heading') {
+                                    return <h4 key={index}>{block.text}</h4>;
+                                }
+                                if (block.type === 'paragraph') {
+                                    return (
+                                        <p className={block.indent ? 'lesson-indent' : ''} key={index}>
+                                            {block.text}
+                                        </p>
+                                    );
+                                }
+                                if (block.type === 'list') {
+                                    return (
+                                        <ul className="lesson-list" key={index}>
+                                            {block.items.map((item) => (
+                                                <li key={item}>{item}</li>
+                                            ))}
+                                        </ul>
+                                    );
+                                }
+                                if (block.type === 'terms') {
+                                    return (
+                                        <ul className="lesson-terms" key={index}>
+                                            {block.items.map((term) => (
+                                                <li key={term.term}>
+                                                    <strong>{term.term}</strong> → {term.definition}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    );
+                                }
+                                if (block.type === 'table') {
+                                    return (
+                                        <table className="lesson-table" key={index}>
+                                            <thead>
+                                                <tr>
+                                                    {block.headers.map((header) => (
+                                                        <th key={header}>{header}</th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {block.rows.map((row, rowIndex) => (
+                                                    <tr key={rowIndex}>
+                                                        {row.map((cell, cellIndex) => (
+                                                            <td key={cellIndex}>{cell}</td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    );
+                                }
+                                if (block.type === 'section') {
+                                    return (
+                                        <div className="lesson-section" key={index}>
+                                            <div className="lesson-section-title">{block.title}</div>
+                                            {block.text.map((paragraph, pIndex) => (
+                                                <p
+                                                    className={[
+                                                        pIndex === 0 ? 'lesson-indent' : '',
+                                                        paragraph.italic ? 'lesson-italic' : '',
+                                                        paragraph.bold ? 'lesson-bold' : '',
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(' ')}
+                                                    key={pIndex}
+                                                >
+                                                    {paragraph.text}
+                                                </p>
+                                            ))}
+                                        </div>
+                                    );
+                                }
+                            })}
+                        </div>
+                    )}
+
                     <div className="notice">
-                        <strong>Practical activity:</strong> Apply the lesson to
-                        a real or simulated online post and document the
-                        evidence used.
+                        <strong>Practical activity:</strong> {activeLesson.practicalActivity}
                     </div>
-                    <div className="quiz-box">
-                        <strong>Knowledge check</strong>
-                        <div className="small muted quiz-question">
-                            Which action best supports responsible verification?
+                    {activeLesson.quiz && (
+                        <div className="fact-fake-quiz">
+                            <h3>{activeLesson.quiz.title}</h3>
+                            <p>
+                                <strong>Directions:</strong> {activeLesson.quiz.directions}
+                            </p>
+                            {activeLesson.quiz.statements.map((statement, index) => {
+                                const selected = quizAnswers[index];
+
+                                return (
+                                    <div className="fact-fake-item" key={statement.text}>
+                                        <p className="fact-fake-statement">
+                                            {index + 1}. {statement.text}
+                                        </p>
+                                        <div className="fact-fake-options">
+                                            <button
+                                                className={`fact-fake-btn fact-btn ${selected === 'fact' ? 'selected' : ''}`}
+                                                onClick={() => {
+                                                    setQuizAnswersByModule((current) => ({
+                                                        ...current,
+                                                        [activeModule]: {
+                                                            ...current[activeModule],
+                                                            [index]: 'fact',
+                                                        },
+                                                    }));
+                                                    toast(
+                                                        statement.answer === 'fact'
+                                                            ? 'Correct!'
+                                                            : 'Not quite — try again',
+                                                    );
+                                                }}
+                                                type="button"
+                                            >
+                                                FACT
+                                            </button>
+                                            <button
+                                                className={`fact-fake-btn fake-btn ${selected === 'fake' ? 'selected' : ''}`}
+                                                onClick={() => {
+                                                    setQuizAnswersByModule((current) => ({
+                                                        ...current,
+                                                        [activeModule]: {
+                                                            ...current[activeModule],
+                                                            [index]: 'fake',
+                                                        },
+                                                    }));
+                                                    toast(
+                                                        statement.answer === 'fake'
+                                                            ? 'Correct!'
+                                                            : 'Not quite — try again',
+                                                    );
+                                                }}
+                                                type="button"
+                                            >
+                                                FAKE
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                        <div className="quiz-options">
-                            {[
-                                'Share immediately if the claim has many likes.',
-                                'Compare the claim with credible primary and independent sources.',
-                                'Trust the first AI-generated answer without checking evidence.',
-                            ].map((answer, index) => (
-                                <button
-                                    className={`quiz-option ${selectedQuizAnswer === index && index === 1 ? 'correct' : ''}`}
-                                    key={answer}
-                                    onClick={() => {
-                                        setSelectedQuizAnswer(index);
-                                        toast(
-                                            index === 1
-                                                ? 'Correct: verify with credible evidence'
-                                                : 'Try again: popularity is not evidence',
-                                        );
-                                    }}
-                                    type="button"
-                                >
-                                    {answer}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    )}
                     <div className="modal-actions">
                         <button
                             className="btn btn-outline"
@@ -1848,12 +1969,15 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                         </button>
                         <button
                             className="btn btn-dark"
+                            disabled={!quizPassed}
                             onClick={completeModule}
                             type="button"
                         >
                             {activeLesson.progress === 100
                                 ? 'Completed'
-                                : 'Mark Module Complete'}
+                                : quizPassed
+                                ? 'Mark Module Complete'
+                                : 'Pass the quiz to continue'}
                         </button>
                     </div>
                 </Modal>
