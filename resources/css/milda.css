@@ -88,10 +88,15 @@
       min-width: 0;
     }
     .intro-logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
       margin-bottom: 18px;
+    }
+    .intro-logo-image {
+      height: 40px;
+      width: auto;
     }
     .intro-logo-mark, .brand-mark {
       display: grid;
@@ -149,10 +154,11 @@
       overflow-y:auto;
       overscroll-behavior:contain;
     }
-    .brand { display:flex; align-items:center; gap:12px; padding:3px 8px 17px; border-bottom:1px solid rgba(255,255,255,.13); }
+    .brand { display:flex; flex-direction:column; align-items:flex-start; gap:8px; padding:3px 8px 17px; border-bottom:1px solid rgba(255,255,255,.13); }
     .brand-mark { width:44px;height:44px;border-radius:14px;font-size:20px; }
+    .brand-image { height:32px; width:auto; }
     .brand h1 { margin:0; font-size:19px; }
-    .brand p { margin:3px 0 0; font-size:10px; color:rgba(255,255,255,.65); }
+    .brand p { margin:0; font-size:10px; color:rgba(255,255,255,.65); }
     .nav-label { padding:0 10px; font-size:10px; text-transform:uppercase; letter-spacing:.13em; color:rgba(255,255,255,.48); margin-bottom: 10px; }
     .nav { display:grid; gap:6px; }
     .nav button {
@@ -515,6 +521,7 @@
       .intro-card { gap:18px;padding-top:0; }
       .intro-logo { margin-bottom:12px; }
       .intro-logo-mark { width:48px;height:48px;border-radius:14px;font-size:23px; }
+      .intro-logo-image { height:32px;width:auto; }
       .intro-copy h1 { font-size:34px; }
       .intro-copy p { font-size:14px;line-height:1.55;margin:14px 0 18px; }
       .intro-tags { gap:6px; }

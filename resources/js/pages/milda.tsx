@@ -226,12 +226,13 @@ function IntroScreen({
             <div className="intro-card">
                 <div className="intro-copy">
                     <div className="intro-logo">
-                        <div className="intro-logo-mark">M</div>
-                        <div>
-                            <strong>MILDA</strong>
-                            <div className="intro-team">
-                                Team QuantumX · UNESCO Youth Hackathon 2026
-                            </div>
+                        <img
+                            src="/images/milda.png"
+                            alt="MILDA"
+                            className="intro-logo-image"
+                        />
+                        <div className="intro-team">
+                            Team QuantumX · UNESCO Youth Hackathon 2026
                         </div>
                     </div>
                     <h1><b>
@@ -1729,11 +1730,8 @@ export default function Milda({ syllabusUrl }: MildaProps) {
             <div className="app-shell">
                 <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                     <div className="brand">
-                        <div className="brand-mark">M</div>
-                        <div>
-                            <h1>MILDA</h1>
-                            <p>Learn. Verify. Share Responsibly.</p>
-                        </div>
+                        <img src="/images/milda.png" alt="MILDA" className="brand-image" />
+                        <p>Learn. Verify. Share Responsibly.</p>
                     </div>
                     {visibleNavGroups.map((group) => (
                         <div className="nav-group" key={group.label}>

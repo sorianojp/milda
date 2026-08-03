@@ -1,5 +1,6 @@
-@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100..700&family=Lato:wght@100;300;400;700;900&display=swap');
 
+@import 'tailwindcss';
 @import 'tw-animate-css';
 
 @source '../views';
@@ -12,6 +13,9 @@
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+
+    --font-josefin: 'Josefin Sans', sans-serif;
+    --font-lato: 'Lato', sans-serif;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
