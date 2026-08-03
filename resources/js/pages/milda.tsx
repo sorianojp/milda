@@ -5,6 +5,8 @@ import {
     Bell,
     BookOpen,
     Check,
+    CircleCheck,
+    CircleHelp,
     FileText,
     Home,
     Link,
@@ -12,6 +14,7 @@ import {
     Search,
     ShieldCheck,
     Sparkles,
+    TriangleAlert,
     Upload,
     Users,
     X,
@@ -25,9 +28,8 @@ import {
     communityItems as initialCommunityItems,
     courseModules as initialCourseModules,
     demoClaim,
-    lessonObjectives,
 } from '@/data/milda';
-import type { AnalysisScenario, CommunityItem } from '@/data/milda';
+import type { AnalysisScenario, CommunityItem, CommunityLink } from '@/data/milda';
 import '../../css/milda.css';
 
 type View =
@@ -40,9 +42,9 @@ type View =
     | 'admin';
 type Role = 'student' | 'instructor' | 'admin';
 type ModuleFilter = 'all' | 'completed' | 'progress' | 'locked';
-type CommunityFilter = 'all' | 'verified' | 'review' | 'media';
+type CommunityFilter = 'all' | 'verified' | 'review' | 'media' | 'reported';
 type VerifyTab = 'text' | 'url' | 'image';
-type ModalName = 'lesson' | 'tour' | 'policy' | null;
+type ModalName = 'lesson' | 'tour' | 'policy' | 'submitClaim' | 'addSource' | null;
 
 type MildaProps = {
     syllabusUrl: string;
@@ -116,6 +118,32 @@ const navGroups: {
         ],
     },
 ];
+
+const claimStatusMeta: Record<CommunityItem['status'], { tag: string; tagClass: string }> = {
+    review: { tag: 'Needs Verification', tagClass: 'tag-amber' },
+    verified: { tag: 'Community Verified', tagClass: 'tag-green' },
+    media: { tag: 'Possible Manipulated Media', tagClass: 'tag-purple' },
+    reported: { tag: 'Frequently Reported', tagClass: 'tag-red' }, // add this
+};
+
+const sourcePlatformOptions: { value: CommunityLink['platform']; label: string }[] = [
+    { value: 'facebook', label: 'Facebook Post / Reel' },
+    { value: 'instagram', label: 'Instagram Post / Story' },
+    { value: 'twitter', label: 'X (Twitter) Post' },
+    { value: 'tiktok', label: 'TikTok Video' },
+    { value: 'youtube', label: 'YouTube Video' },
+    { value: 'web', label: 'Website / News Article' },
+];
+
+function detectPlatform(url: string): CommunityLink['platform'] {
+    const lower = url.toLowerCase();
+    if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook';
+    if (lower.includes('instagram.com')) return 'instagram';
+    if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter';
+    if (lower.includes('tiktok.com')) return 'tiktok';
+    if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube'; // add this
+    return 'web';
+}
 
 function StatCard({
     icon: Icon,
@@ -206,11 +234,11 @@ function IntroScreen({
                             </div>
                         </div>
                     </div>
-                    <h1>
+                    <h1><b>
                         Learn to verify.
                         <br />
                         Build digital trust.
-                    </h1>
+                    </b></h1>
                     <p>
                         MILDA is a course-centered Media and Information
                         Literacy ecosystem that combines structured learning,
@@ -225,7 +253,7 @@ function IntroScreen({
                     </div>
                 </div>
                 <div className="role-panel">
-                    <h2>Explore the prototype</h2>
+                    <h2><b>Explore the prototype</b></h2>
                     <p>Select a role to preview the MILDA experience.</p>
                     <div className="role-grid">
                         {roles.map(
@@ -289,18 +317,18 @@ function DashboardView({
     toast: (message: string) => void;
 }) {
     return (
-        <section className="view active">
+        <section className="view active dashboard-view">
             <div className="hero">
                 <div className="hero-copy">
                     <span className="eyebrow">
                         <Sparkles />
                         MILDA Course Program
                     </span>
-                    <h3>
+                    <h3><b>
                         Welcome back, Juan.
-                        <br />
+                        
                         Verify before you share.
-                    </h3>
+                    </b></h3><br />
                     <p>
                         Continue your course, complete a real-world verification
                         mission, and build the evidence-based habits required to
@@ -308,7 +336,7 @@ function DashboardView({
                     </p>
                     <div className="hero-actions">
                         <button
-                            className="btn btn-primary"
+                            className="btn btn-ghost"
                             onClick={() => showView('learn')}
                             type="button"
                         >
@@ -336,7 +364,7 @@ function DashboardView({
                 <div className="hero-progress">
                     <div className="progress-ring">
                         <strong>{courseProgress}%</strong>
-                        <span>course complete</span>
+                        <span>progress</span>
                     </div>
                     <div>
                         <h4>Next: AI-Generated Content</h4>
@@ -521,22 +549,7 @@ function ModulesView({
     return (
         <section className="view active">
             <div className="section-heading">
-                <div>
-                    <h2>MILDA Course Modules</h2>
-                    <p>
-                        Complete the structured course and Digital Verification
-                        Portfolio to earn the contributor badge.
-                    </p>
-                </div>
                 <div className="filter-row">
-                    <a
-                        className="btn btn-dark download-link"
-                        download
-                        href={syllabusUrl}
-                    >
-                        <FileText />
-                        Download Course Syllabus
-                    </a>
                     {(
                         [
                             ['all', 'All'],
@@ -866,29 +879,75 @@ function VerificationView({
     );
 }
 
+function FacebookIcon() {
+    return (
+        <svg fill="currentColor" height="18" viewBox="0 0 24 24" width="18">
+            <path d="M22 12.06C22 6.53 17.52 2.04 12 2.04S2 6.53 2 12.06c0 4.99 3.66 9.13 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.45 2.91h-2.33V22c4.78-.81 8.44-4.95 8.44-9.94Z" />
+        </svg>
+    );
+}
+
+function InstagramIcon() {
+    return (
+        <svg fill="currentColor" height="18" viewBox="0 0 24 24" width="18">
+            <path d="M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.22.6 1.77 1.15.55.55.9 1.11 1.15 1.77.25.64.42 1.37.47 2.43.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.9 4.9 0 0 1-1.15 1.77 4.9 4.9 0 0 1-1.77 1.15c-.64.25-1.37.42-2.43.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.9 4.9 0 0 1-1.77-1.15 4.9 4.9 0 0 1-1.15-1.77c-.25-.64-.42-1.37-.47-2.43C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.26-.66.6-1.22 1.15-1.77A4.9 4.9 0 0 1 5.45 2.53c.64-.25 1.37-.42 2.43-.47C8.94 2.01 9.28 2 12 2Zm0 1.8c-2.67 0-2.99.01-4.04.06-.87.04-1.34.18-1.65.3-.42.16-.72.35-1.03.66-.31.31-.5.61-.66 1.03-.12.31-.26.78-.3 1.65C4.27 8.55 4.26 8.87 4.26 12s.01 3.45.06 4.5c.04.87.18 1.34.3 1.65.16.42.35.72.66 1.03.31.31.61.5 1.03.66.31.12.78.26 1.65.3 1.05.05 1.37.06 4.04.06s2.99-.01 4.04-.06c.87-.04 1.34-.18 1.65-.3.42-.16.72-.35 1.03-.66.31-.31.5-.61.66-1.03.12-.31.26-.78.3-1.65.05-1.05.06-1.37.06-4.5s-.01-3.45-.06-4.5c-.04-.87-.18-1.34-.3-1.65a2.77 2.77 0 0 0-.66-1.03 2.77 2.77 0 0 0-1.03-.66c-.31-.12-.78-.26-1.65-.3-1.05-.05-1.37-.06-4.04-.06Zm0 3.65a4.55 4.55 0 1 1 0 9.1 4.55 4.55 0 0 1 0-9.1Zm0 1.8a2.75 2.75 0 1 0 0 5.5 2.75 2.75 0 0 0 0-5.5Zm4.73-1.98a1.06 1.06 0 1 1 0 2.12 1.06 1.06 0 0 1 0-2.12Z" />
+        </svg>
+    );
+}
+
+function XIcon() {
+    return (
+        <svg fill="currentColor" height="16" viewBox="0 0 24 24" width="16">
+            <path d="M18.9 2h3.4l-7.4 8.46L23.5 22h-6.8l-5.33-6.97L5.26 22H1.86l7.92-9.05L1 2h6.97l4.82 6.37Zm-1.2 18h1.88L7.4 3.9H5.38Z" />
+        </svg>
+    );
+}
+
+function TikTokIcon() {
+    return (
+        <svg fill="currentColor" height="18" viewBox="0 0 24 24" width="18">
+            <path d="M16.6 2h-3.3v13.6a2.9 2.9 0 1 1-2.06-2.78V9.5a6.1 6.1 0 1 0 5.36 6.05V8.28a7.8 7.8 0 0 0 4.6 1.48V6.4a4.5 4.5 0 0 1-4.6-4.4Z" />
+        </svg>
+    );
+}
+
+function YouTubeIcon() {
+    return (
+        <svg fill="currentColor" height="18" viewBox="0 0 24 24" width="18">
+            <path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14C4.5 20.5 12 20.5 12 20.5s7.5 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81ZM9.75 15.5v-7l6.27 3.5-6.27 3.5Z" />
+        </svg>
+    );
+}
+
 function CommunityView({
     items,
     filter,
+    selectedVotes,
     setFilter,
     vote,
     toast,
+    openSubmitClaim,
+    openAddSource, // add this
 }: {
     items: CommunityItem[];
     filter: CommunityFilter;
+    selectedVotes: Record<number, number>;
     setFilter: (filter: CommunityFilter) => void;
     vote: (itemIndex: number, voteIndex: number) => void;
     toast: (message: string) => void;
+    openSubmitClaim: () => void;
+    openAddSource: (itemIndex: number) => void; // add this
 }) {
     return (
-        <section className="view active">
+        <section className="view active community-view">
             <div className="section-heading">
-                <div>
-                    <h2>Community Verification Hub</h2>
-                    <p>
-                        Participate through evidence, responsible feedback, and
-                        moderated review.
-                    </p>
-                </div>
+                <button
+                    className="btn btn-dark"
+                    onClick={openSubmitClaim}
+                    type="button"
+                >
+                    + Submit New Claim
+                </button>
                 <div className="filter-row">
                     {(
                         [
@@ -896,6 +955,7 @@ function CommunityView({
                             ['verified', 'Verified'],
                             ['review', 'Needs Review'],
                             ['media', 'Manipulated Media'],
+                            ['reported', 'Frequently Reported'], // add this
                         ] as [CommunityFilter, string][]
                     ).map(([status, label]) => (
                         <button
@@ -916,51 +976,67 @@ function CommunityView({
                     }
 
                     return (
-                        <article
-                            className="card community-card"
-                            key={item.title}
-                        >
-                            <div className="card-header">
+                        <article className="verify-card" key={item.title}>
+                            <div className="verify-card-header">
                                 <span className={`tag ${item.tagClass}`}>
                                     {item.tag}
                                 </span>
-                                <span className="tiny muted">
-                                    {item.reports}
-                                </span>
+                                <span className="tiny muted">{item.reports}</span>
                             </div>
-                            <h3>{item.title}</h3>
-                            <p>{item.text}</p>
-                            <div className="evidence-note">{item.note}</div>
-                            <div className="vote-row">
-                                {['Reliable', 'Needs Review', 'Misleading'].map(
-                                    (label, voteIndex) => (
+                            <h3 className="verify-card-title">{item.title}</h3>
+                            <p className="verify-card-text">{item.text}</p>
+                            <div className={`verify-card-note verify-card-note-${item.status}`}>{item.note}</div>
+                            <div className="verify-card-votes">
+                                {[
+                                    { label: 'Reliable', icon: CircleCheck, colorClass: 'verify-vote-reliable' },
+                                    { label: 'Needs Review', icon: CircleHelp, colorClass: 'verify-vote-review' },
+                                    { label: 'Misleading', icon: TriangleAlert, colorClass: 'verify-vote-misleading' },
+                                ].map(({ label, icon: VoteIcon, colorClass }, voteIndex) => {
+                                    const isSelected = selectedVotes[index] === voteIndex;
+
+                                    return (
                                         <button
-                                            className="vote-btn"
+                                            aria-label={label}
+                                            className={`verify-vote-btn ${colorClass} ${isSelected ? 'selected' : ''}`}
                                             key={label}
-                                            onClick={() =>
-                                                vote(index, voteIndex)
-                                            }
+                                            onClick={() => vote(index, voteIndex)}
                                             type="button"
                                         >
-                                            {label}{' '}
-                                            <strong>
-                                                {item.votes[voteIndex]}
-                                            </strong>
+                                            <VoteIcon className={`verify-vote-icon verify-vote-icon-${colorClass}`} />
+                                            <strong>{item.votes[voteIndex]}</strong>
                                         </button>
-                                    ),
-                                )}
+                                    );
+                                })}
+                            </div>
+                            <div className="verify-card-links-header">
+                                <span>
+                                    🔗 REFERENCED SOCIAL LINKS ({item.links.length})
+                                </span>
                                 <button
-                                    className="vote-btn"
-                                    onClick={() =>
-                                        toast(
-                                            'Trusted-source form opened in the full system',
-                                        )
-                                    }
+                                    className="verify-add-source"
+                                    onClick={() => openAddSource(index)}
                                     type="button"
                                 >
-                                    Add Source
+                                    + Add Source
                                 </button>
                             </div>
+                            {item.links.map((link) => (
+                                <div className="verify-card-link" key={link.url}>
+                                    <span className={`verify-link-icon verify-link-icon-${link.platform}`}>
+                                        {link.platform === 'facebook' && <FacebookIcon />}
+                                        {link.platform === 'instagram' && <InstagramIcon />}
+                                        {link.platform === 'twitter' && <XIcon />}
+                                        {link.platform === 'tiktok' && <TikTokIcon />}
+                                        {link.platform === 'youtube' && <YouTubeIcon />} {/* add this */}
+                                        {link.platform === 'web' && '🌐'}
+                                    </span>
+                                    <div className="verify-link-info">
+                                        <strong>{link.label}</strong>
+                                        <span>{link.url}</span>
+                                    </div>
+                                    <span className="verify-link-actions">⧉ ↗</span>
+                                </div>
+                            ))}
                         </article>
                     );
                 })}
@@ -1341,22 +1417,44 @@ export default function Milda({ syllabusUrl }: MildaProps) {
     const [moduleFilter, setModuleFilter] = useState<ModuleFilter>('all');
     const [activeModule, setActiveModule] = useState(6);
     const [community, setCommunity] = useState(initialCommunityItems);
-    const [communityFilter, setCommunityFilter] =
-        useState<CommunityFilter>('all');
+    const [communityFilter, setCommunityFilter] = useState<CommunityFilter>('all');
     const [verifyTab, setVerifyTab] = useState<VerifyTab>('text');
     const [quickClaim, setQuickClaim] = useState('');
     const [quickUrl, setQuickUrl] = useState('');
     const [verifyClaim, setVerifyClaim] = useState('');
     const [verifyUrl, setVerifyUrl] = useState('');
     const [urlContext, setUrlContext] = useState('');
+
     const [analysisResult, setAnalysisResult] = useState(
         analysisScenarios.review,
     );
+
     const [resultVisible, setResultVisible] = useState(false);
-    const [selectedQuizAnswer, setSelectedQuizAnswer] = useState<number | null>(
-        null,
-    );
+
+    const [quizAnswersByModule, setQuizAnswersByModule] = useState<
+        Record<number, Record<number, 'fact' | 'fake'>>
+    >({});
+
+    const quizAnswers = quizAnswersByModule[activeModule] ?? {};
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+    const [selectedVotes, setSelectedVotes] = useState<Record<number, number>>(
+        {},
+    );
+
+    const [claimForm, setClaimForm] = useState({
+        text: '',
+        context: '',
+        status: 'review' as CommunityItem['status'],
+        url: '',
+    });
+
+    const [addSourceItemIndex, setAddSourceItemIndex] = useState<number | null>(null);
+    const [sourceForm, setSourceForm] = useState({
+        platform: 'facebook' as CommunityLink['platform'],
+        url: '',
+        label: '',
+    });
 
     const courseProgress = useMemo(
         () =>
@@ -1417,7 +1515,6 @@ export default function Milda({ syllabusUrl }: MildaProps) {
 
     const openLesson = (index: number) => {
         setActiveModule(index);
-        setSelectedQuizAnswer(null);
         setModal('lesson');
     };
 
@@ -1436,6 +1533,12 @@ export default function Milda({ syllabusUrl }: MildaProps) {
         setModal(null);
         toast(`Module ${activeModule + 1} marked complete`);
     };
+
+    const quizPassed = activeLesson.quiz
+        ? activeLesson.quiz.statements.every(
+            (statement, index) => quizAnswers[index] === statement.answer,
+        )
+        : true;
 
     const determineAnalysis = (claim: string) => {
         const normalized = claim.toLowerCase();
@@ -1485,6 +1588,9 @@ export default function Milda({ syllabusUrl }: MildaProps) {
     };
 
     const vote = (itemIndex: number, voteIndex: number) => {
+        const previousVote = selectedVotes[itemIndex];
+        const isDeselecting = previousVote === voteIndex;
+
         setCommunity((current) =>
             current.map((item, index) => {
                 if (index !== itemIndex) {
@@ -1492,13 +1598,36 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                 }
 
                 const votes: [number, number, number] = [...item.votes];
-                votes[voteIndex] += 1;
+
+                if (previousVote !== undefined) {
+                    votes[previousVote] -= 1;
+                }
+
+                if (!isDeselecting) {
+                    votes[voteIndex] += 1;
+                }
 
                 return { ...item, votes };
             }),
         );
-        toast('Vote recorded for prototype demonstration');
-    };
+
+        setSelectedVotes((current) => {
+            if (isDeselecting) {
+                const next = { ...current };
+                delete next[itemIndex];
+                return next;
+            }
+
+            return { ...current, [itemIndex]: voteIndex };
+        });
+
+        if (isDeselecting) {
+                toast('Vote removed');
+            } else {
+                const labels = ['reliable', 'needs review', 'misleading'];
+                toast(`Marked as ${labels[voteIndex]}`);
+            }
+        };
 
     useEffect(() => {
         const closeOverlays = (event: KeyboardEvent) => {
@@ -1513,6 +1642,72 @@ export default function Milda({ syllabusUrl }: MildaProps) {
         return () => document.removeEventListener('keydown', closeOverlays);
     }, []);
 
+    const openSubmitClaim = () => setModal('submitClaim');
+
+    const publishClaim = () => {
+        const trimmedText = claimForm.text.trim();
+
+        if (!trimmedText) {
+            return;
+        }
+
+        const meta = claimStatusMeta[claimForm.status];
+        const trimmedUrl = claimForm.url.trim();
+
+        const newItem: CommunityItem = {
+            status: claimForm.status,
+            tag: meta.tag,
+            tagClass: meta.tagClass,
+            reports: 'New submission',
+            title: trimmedText,
+            text: claimForm.context.trim() || 'Awaiting community context and evidence.',
+            note: 'Submitted by you · awaiting moderator review.',
+            votes: [0, 0, 0],
+            links: trimmedUrl
+                ? [{ platform: detectPlatform(trimmedUrl), label: 'Primary Source', url: trimmedUrl }]
+                : [],
+        };
+
+        setCommunity((current) => [newItem, ...current]);
+        setClaimForm({ text: '', context: '', status: 'review', url: '' });
+        setCommunityFilter('all');
+        setModal(null);
+        toast('Claim published to the Verification Hub');
+    };
+
+    const openAddSource = (itemIndex: number) => {
+        setAddSourceItemIndex(itemIndex);
+        setSourceForm({ platform: 'facebook', url: '', label: '' });
+        setModal('addSource');
+    };
+
+    const saveSource = () => {
+        const trimmedUrl = sourceForm.url.trim();
+        const trimmedLabel = sourceForm.label.trim();
+
+        if (!trimmedUrl || addSourceItemIndex === null) {
+            return;
+        }
+
+        const newLink: CommunityLink = {
+            platform: sourceForm.platform,
+            label: trimmedLabel || 'Additional Source',
+            url: trimmedUrl,
+        };
+
+        setCommunity((current) =>
+            current.map((item, index) =>
+                index === addSourceItemIndex
+                    ? { ...item, links: [...item.links, newLink] }
+                    : item,
+            ),
+        );
+
+        setModal(null);
+        setAddSourceItemIndex(null);
+        toast('Source added to the record');
+    };
+
     return (
         <>
             <Head title="MILDA — Learn. Verify. Share Responsibly.">
@@ -1520,12 +1715,7 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                     content="MILDA is a Media and Information Literacy ecosystem for structured learning, AI-assisted guidance, and evidence-based community verification."
                     name="description"
                 />
-                <link href="https://fonts.googleapis.com" rel="preconnect" />
-                <link
-                    crossOrigin=""
-                    href="https://fonts.gstatic.com"
-                    rel="preconnect"
-                />
+
                 <link
                     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap"
                     rel="stylesheet"
@@ -1702,6 +1892,9 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                             <CommunityView
                                 filter={communityFilter}
                                 items={community}
+                                openAddSource={openAddSource} // add this
+                                openSubmitClaim={openSubmitClaim}
+                                selectedVotes={selectedVotes}
                                 setFilter={setCommunityFilter}
                                 toast={toast}
                                 vote={vote}
@@ -1799,7 +1992,7 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                         </button>
                     </div>
                     <div className="lesson-objectives">
-                        {lessonObjectives.map((objective) => (
+                        {activeLesson.objectives.map((objective) => (
                             <div className="objective" key={objective.title}>
                                 <strong>{objective.title}</strong>
                                 <br />
@@ -1809,40 +2002,171 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                             </div>
                         ))}
                     </div>
+
+                    {activeLesson.content && (
+                        <div className="lesson-content">
+                            <div className="lesson-content-box">
+                                <div className="lesson-content-label">
+                                    {activeLesson.content.objectivesLabel}
+                                </div>
+                                <ul>
+                                    {activeLesson.content.objectives.map((item) => (
+                                        <li key={item}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <blockquote className="lesson-intro">
+                                <p className="lesson-intro-text">
+                                    {activeLesson.content.intro}
+                                </p>
+                                {activeLesson.content.introQuestion && (
+                                    <p className="lesson-intro-question">
+                                        {activeLesson.content.introQuestion}
+                                    </p>
+                                )}
+                            </blockquote>
+                            {activeLesson.content.blocks.map((block, index) => {
+                                if (block.type === 'heading') {
+                                    return <h4 key={index}>{block.text}</h4>;
+                                }
+                                if (block.type === 'paragraph') {
+                                    return (
+                                        <p className={block.indent ? 'lesson-indent' : ''} key={index}>
+                                            {block.text}
+                                        </p>
+                                    );
+                                }
+                                if (block.type === 'list') {
+                                    return (
+                                        <ul className="lesson-list" key={index}>
+                                            {block.items.map((item) => (
+                                                <li key={item}>{item}</li>
+                                            ))}
+                                        </ul>
+                                    );
+                                }
+                                if (block.type === 'terms') {
+                                    return (
+                                        <ul className="lesson-terms" key={index}>
+                                            {block.items.map((term) => (
+                                                <li key={term.term}>
+                                                    <strong>{term.term}</strong> → {term.definition}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    );
+                                }
+                                if (block.type === 'table') {
+                                    return (
+                                        <table className="lesson-table" key={index}>
+                                            <thead>
+                                                <tr>
+                                                    {block.headers.map((header) => (
+                                                        <th key={header}>{header}</th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {block.rows.map((row, rowIndex) => (
+                                                    <tr key={rowIndex}>
+                                                        {row.map((cell, cellIndex) => (
+                                                            <td key={cellIndex}>{cell}</td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    );
+                                }
+                                if (block.type === 'section') {
+                                    return (
+                                        <div className="lesson-section" key={index}>
+                                            <div className="lesson-section-title">{block.title}</div>
+                                            {block.text.map((paragraph, pIndex) => (
+                                                <p
+                                                    className={[
+                                                        pIndex === 0 ? 'lesson-indent' : '',
+                                                        paragraph.italic ? 'lesson-italic' : '',
+                                                        paragraph.bold ? 'lesson-bold' : '',
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(' ')}
+                                                    key={pIndex}
+                                                >
+                                                    {paragraph.text}
+                                                </p>
+                                            ))}
+                                        </div>
+                                    );
+                                }
+                            })}
+                        </div>
+                    )}
+
                     <div className="notice">
-                        <strong>Practical activity:</strong> Apply the lesson to
-                        a real or simulated online post and document the
-                        evidence used.
+                        <strong>Practical activity:</strong> {activeLesson.practicalActivity}
                     </div>
-                    <div className="quiz-box">
-                        <strong>Knowledge check</strong>
-                        <div className="small muted quiz-question">
-                            Which action best supports responsible verification?
+                    {activeLesson.quiz && (
+                        <div className="fact-fake-quiz">
+                            <h3>{activeLesson.quiz.title}</h3>
+                            <p>
+                                <strong>Directions:</strong> {activeLesson.quiz.directions}
+                            </p>
+                            {activeLesson.quiz.statements.map((statement, index) => {
+                                const selected = quizAnswers[index];
+
+                                return (
+                                    <div className="fact-fake-item" key={statement.text}>
+                                        <p className="fact-fake-statement">
+                                            {index + 1}. {statement.text}
+                                        </p>
+                                        <div className="fact-fake-options">
+                                            <button
+                                                className={`fact-fake-btn fact-btn ${selected === 'fact' ? 'selected' : ''}`}
+                                                onClick={() => {
+                                                    setQuizAnswersByModule((current) => ({
+                                                        ...current,
+                                                        [activeModule]: {
+                                                            ...current[activeModule],
+                                                            [index]: 'fact',
+                                                        },
+                                                    }));
+                                                    toast(
+                                                        statement.answer === 'fact'
+                                                            ? 'Correct!'
+                                                            : 'Not quite — try again',
+                                                    );
+                                                }}
+                                                type="button"
+                                            >
+                                                FACT
+                                            </button>
+                                            <button
+                                                className={`fact-fake-btn fake-btn ${selected === 'fake' ? 'selected' : ''}`}
+                                                onClick={() => {
+                                                    setQuizAnswersByModule((current) => ({
+                                                        ...current,
+                                                        [activeModule]: {
+                                                            ...current[activeModule],
+                                                            [index]: 'fake',
+                                                        },
+                                                    }));
+                                                    toast(
+                                                        statement.answer === 'fake'
+                                                            ? 'Correct!'
+                                                            : 'Not quite — try again',
+                                                    );
+                                                }}
+                                                type="button"
+                                            >
+                                                FAKE
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                        <div className="quiz-options">
-                            {[
-                                'Share immediately if the claim has many likes.',
-                                'Compare the claim with credible primary and independent sources.',
-                                'Trust the first AI-generated answer without checking evidence.',
-                            ].map((answer, index) => (
-                                <button
-                                    className={`quiz-option ${selectedQuizAnswer === index && index === 1 ? 'correct' : ''}`}
-                                    key={answer}
-                                    onClick={() => {
-                                        setSelectedQuizAnswer(index);
-                                        toast(
-                                            index === 1
-                                                ? 'Correct: verify with credible evidence'
-                                                : 'Try again: popularity is not evidence',
-                                        );
-                                    }}
-                                    type="button"
-                                >
-                                    {answer}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    )}
                     <div className="modal-actions">
                         <button
                             className="btn btn-outline"
@@ -1853,12 +2177,15 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                         </button>
                         <button
                             className="btn btn-dark"
+                            disabled={!quizPassed}
                             onClick={completeModule}
                             type="button"
                         >
                             {activeLesson.progress === 100
                                 ? 'Completed'
-                                : 'Mark Module Complete'}
+                                : quizPassed
+                                ? 'Mark Module Complete'
+                                : 'Pass the quiz to continue'}
                         </button>
                     </div>
                 </Modal>
@@ -1986,6 +2313,98 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                 </Modal>
             )}
 
+            {modal === 'submitClaim' && (
+                <Modal onClose={() => setModal(null)}>
+                    <div className="modal-head">
+                        <div>
+                            <h2>Submit New Claim for Community Review</h2>
+                        </div>
+                        <button
+                            aria-label="Close submission form"
+                            className="close-btn"
+                            onClick={() => setModal(null)}
+                            type="button"
+                        >
+                            <X />
+                        </button>
+                    </div>
+                    <div className="claim-form">
+                        <div>
+                            <label htmlFor="claimText">Claim Quote / Statement</label>
+                            <input
+                                id="claimText"
+                                onChange={(event) =>
+                                    setClaimForm((current) => ({ ...current, text: event.target.value }))
+                                }
+                                placeholder='"Classes are suspended tomorrow in all schools."'
+                                type="text"
+                                value={claimForm.text}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="claimContext">Initial Context &amp; Findings</label>
+                            <textarea
+                                id="claimContext"
+                                onChange={(event) =>
+                                    setClaimForm((current) => ({ ...current, context: event.target.value }))
+                                }
+                                placeholder="No official city or school authority is cited in the post..."
+                                value={claimForm.context}
+                            />
+                        </div>
+                        <div className="claim-form-row">
+                            <div>
+                                <label htmlFor="claimStatus">Initial Status Badge</label>
+                                <select
+                                    className="form-control"
+                                    id="claimStatus"
+                                    onChange={(event) =>
+                                        setClaimForm((current) => ({
+                                            ...current,
+                                            status: event.target.value as CommunityItem['status'],
+                                        }))
+                                    }
+                                    value={claimForm.status}
+                                >
+                                    <option value="review">Needs Verification</option>
+                                    <option value="verified">Community Verified</option>
+                                    <option value="media">Possible Manipulated Media</option>
+                                    <option value="reported">Frequently Reported</option> {/* add this */}
+                                </select>
+                            </div>
+                            <div>
+                                <label htmlFor="claimUrl">Primary Social URL</label>
+                                <input
+                                    id="claimUrl"
+                                    onChange={(event) =>
+                                        setClaimForm((current) => ({ ...current, url: event.target.value }))
+                                    }
+                                    placeholder="https://facebook.com/..."
+                                    type="url"
+                                    value={claimForm.url}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal-actions">
+                        <button
+                            className="btn btn-outline"
+                            onClick={() => setModal(null)}
+                            type="button"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="btn btn-dark"
+                            disabled={!claimForm.text.trim()}
+                            onClick={publishClaim}
+                            type="button"
+                        >
+                            Publish to Hub
+                        </button>
+                    </div>
+                </Modal>
+            )}
             <div className="toast-container">
                 {toasts.map((notification) => (
                     <div className="toast" key={notification.id}>
@@ -1993,6 +2412,87 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                     </div>
                 ))}
             </div>
+
+            {modal === 'addSource' && addSourceItemIndex !== null && (
+                <Modal onClose={() => setModal(null)}>
+                    <div className="modal-head">
+                        <div>
+                            <h2>Attach Social Media or News URL</h2>
+                        </div>
+                        <button
+                            aria-label="Close add source form"
+                            className="close-btn"
+                            onClick={() => setModal(null)}
+                            type="button"
+                        >
+                            <X />
+                        </button>
+                    </div>
+                    <div className="claim-form">
+                        <div>
+                            <label htmlFor="sourcePlatform">Platform Type</label>
+                            <select
+                                className="form-control"
+                                id="sourcePlatform"
+                                onChange={(event) =>
+                                    setSourceForm((current) => ({
+                                        ...current,
+                                        platform: event.target.value as CommunityLink['platform'],
+                                    }))
+                                }
+                                value={sourceForm.platform}
+                            >
+                                {sourcePlatformOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="sourceUrl">Source URL</label>
+                            <input
+                                id="sourceUrl"
+                                onChange={(event) =>
+                                    setSourceForm((current) => ({ ...current, url: event.target.value }))
+                                }
+                                placeholder="https://www.facebook.com/share/p/..."
+                                type="url"
+                                value={sourceForm.url}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="sourceLabel">Source Label / Context</label>
+                            <input
+                                id="sourceLabel"
+                                onChange={(event) =>
+                                    setSourceForm((current) => ({ ...current, label: event.target.value }))
+                                }
+                                placeholder="e.g., Original viral post by User123"
+                                type="text"
+                                value={sourceForm.label}
+                            />
+                        </div>
+                    </div>
+                    <div className="modal-actions">
+                        <button
+                            className="btn btn-outline"
+                            onClick={() => setModal(null)}
+                            type="button"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="btn btn-dark"
+                            disabled={!sourceForm.url.trim()}
+                            onClick={saveSource}
+                            type="button"
+                        >
+                            Save Source
+                        </button>
+                    </div>
+                </Modal>
+            )}
         </>
     );
 }
