@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 import Header from '@/layout/header';
 import Footer from '@/layout/footer';
 
@@ -10,17 +11,19 @@ const assets = {
 };
 
 const sidebarLinks = [
-  { label: 'Dashboard', active: true },
-  { label: 'Course Modules', active: false },
-  { label: 'Badges', active: false },
-  { label: 'Community', active: false },
-  { label: 'Fake News Detector', active: false },
+  { label: 'Dashboard', image: '/images/dashboard.png' },
+  { label: 'Course Modules', image: '/images/coursemodules.png' },
+  { label: 'Badges', image: '/images/badges.png' },
+  { label: 'Community', image: '/images/community.png' },
+  { label: 'Fake News Detector', image: '/images/fakenewsdetector.png' },
 ];
 
 const primaryButton =
-    "className=mb-16 rounded-lg border border-transparent bg-[#efe6dd] px-6 py-3 font-josefin text-base font-semibold text-[#231f20] transition-all duration-300 ease-in-out hover:rounded-3xl hover:bg-[#7EBDC2] hover:text-black";
+    "className=mb-16 rounded-lg border border-transparent bg-[#efe6dd] px-6 py-3 font-josefin text-base font-semibold text-[#231f20] transition-all duration-300 ease-in-out hover:rounded-3xl hover:bg-[#7EBDC2] hover:text-black cursor-pointer";
 
 export default function Landing() {
+  const [activeLink, setActiveLink] = useState('Dashboard');
+
   return (
     <>
       <Head title="MILDA — Learn. Verify. Share Responsibly." />
@@ -59,7 +62,7 @@ export default function Landing() {
 
             <Link
               href="/milda" 
-              className="mb-16 rounded-lg border border-transparent bg-[#efe6dd] px-6 py-3 font-josefin text-base font-semibold text-[#231f20] transition-all duration-300 ease-in-out hover:rounded-3xl hover:bg-[#7EBDC2] hover:text-black cursor:pointer"
+              className="mb-16 rounded-lg border border-transparent bg-[#efe6dd] px-6 py-3 font-josefin text-base font-semibold text-[#231f20] transition-all duration-300 ease-in-out hover:rounded-3xl hover:bg-[#7EBDC2] hover:text-black cursor-pointer"
             >
               Try the Prototype
             </Link>
@@ -101,24 +104,47 @@ export default function Landing() {
             <div className="flex flex-col gap-0 overflow-hidden rounded-[25px] lg:flex-row">
               <aside className="flex w-full flex-col gap-2 bg-[#2a2425] px-8 py-10 lg:w-[290px] lg:shrink-0">
                 {sidebarLinks.map((item) => (
-                  <button key={item.label} type="button" className="flex items-center gap-3 text-left">
+                  <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => setActiveLink(item.label)}
+                      className="group cursor-pointer flex items-center gap-3 text-left"
+                  >
                     <span
-                      className={`h-8 w-0.5 shrink-0 rounded-full ${
-                        item.active ? 'bg-[#7ebdc2]' : 'bg-transparent'
-                      }`}
+                        className={`h-8 w-0.5 shrink-0 rounded-full transition-colors duration-300 ${
+                            activeLink === item.label
+                                ? 'bg-[#7ebdc2]'
+                                : 'bg-transparent group-hover:bg-[#7ebdc2]'
+                        }`}
                     />
+
                     <span
-                      className={`text-base ${
-                        item.active ? 'font-normal text-[#7ebdc2]' : 'text-[#efe6dd]'
-                      }`}
+                        className={`text-base transition-colors duration-300 ${
+                            activeLink === item.label
+                                ? 'font-normal text-[#7ebdc2]'
+                                : 'text-[#efe6dd] group-hover:text-[#7ebdc2]'
+                        }`}
                     >
-                      {item.label}
+                        {item.label}
                     </span>
                   </button>
                 ))}
               </aside>
 
-              <div className="min-h-[485px] flex-1 rounded-[25px] bg-[#231f20] p-10 lg:p-12" />
+              <div className="relative min-h-[485px] flex-1 overflow-hidden rounded-[25px] bg-[#2a2425] p-10 lg:p-12">
+                <img
+                  src="/images/background.png"
+                  alt=""
+                  className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-40"
+                  aria-hidden="true"
+                />
+
+                <img
+                  src={sidebarLinks.find((item) => item.label === activeLink)?.image}
+                  alt={`${activeLink} preview`}
+                  className="relative z-10 h-full w-full object-contain"
+                />
+              </div>
             </div>
           </div>
         </section>

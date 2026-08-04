@@ -24,11 +24,11 @@ const scrollToSection = (id: string) => {
             break;
 
         case 'news-analyzer-tool':
-            offset = 260;
+            offset = 220;
             break;
 
         case 'browser-extension':
-            offset = 140;
+            offset = 80;
             break;
     }
 
@@ -42,7 +42,7 @@ const scrollToSection = (id: string) => {
         behavior: 'smooth',
     });
 
-    window.history.replaceState({}, "", "/");
+    //window.history.replaceState({}, "", "/");
 };
 
 const primaryButton =
@@ -58,12 +58,12 @@ export default function Header() {
                     className="h-[34px] w-[160px] object-contain"
                 />
 
-                <nav className="hidden items-center gap-8 lg:flex">
+                <nav className="flex items-center gap-8 bg-red-#000">
                     {navLinks.map((link) => (
                         <button
                             key={link.id}
                             onClick={() => scrollToSection(link.id)}
-                            className="relative font-josefin text-base text-[#efe6dd]
+                            className="relative cursor-pointer font-josefin text-base text-[#efe6dd]
                                     transition-colors duration-300
                                     hover:text-[#7EBDC2]
                                     after:absolute after:left-1/2 after:-bottom-1
@@ -78,7 +78,7 @@ export default function Header() {
                 </nav>
 
                 <div className="flex items-center gap-8">
-                    <a
+                    <Link
                         href="/login"
                         className="relative font-josefin text-base text-[#efe6dd]
                                    transition-colors duration-300
@@ -90,7 +90,7 @@ export default function Header() {
                                    after:-translate-x-1/2 hover:after:w-full"
                     >
                         Login
-                    </a>
+                    </Link>
 
                     <Link href="/milda" className={primaryButton}>
                         Get Started

@@ -413,7 +413,7 @@ function DashboardView({
                 <div className="card">
                     <div className="card-header">
                         <div>
-                            <h3>Quick Verification</h3>
+                            <h3><b>Quick Verification</b></h3>
                             <div className="muted small">
                                 Paste a claim or URL to begin a guided check.
                             </div>
@@ -466,7 +466,7 @@ function DashboardView({
                 <div className="card">
                     <div className="card-header">
                         <div>
-                            <h3>Recent Community Activity</h3>
+                            <h3><b>Recent Community Activity</b></h3>
                             <div className="muted small">
                                 Live-style sample records
                             </div>
@@ -487,7 +487,7 @@ function DashboardView({
                                 </span>
                                 <span className="tiny muted">12 min ago</span>
                             </div>
-                            <h4>Claim about a school suspension</h4>
+                            <h4><b>Claim about a school suspension</b></h4>
                             <p>
                                 Official evidence has not yet been attached to
                                 the original post.
@@ -500,7 +500,7 @@ function DashboardView({
                                 </span>
                                 <span className="tiny muted">1 hr ago</span>
                             </div>
-                            <h4>Updated scholarship application schedule</h4>
+                            <h4><b>Updated scholarship application schedule</b></h4>
                             <p>
                                 Supported by an official university announcement
                                 and registrar notice.
@@ -513,7 +513,7 @@ function DashboardView({
                                 </span>
                                 <span className="tiny muted">3 hrs ago</span>
                             </div>
-                            <h4>Viral image with inconsistent details</h4>
+                            <h4><b>Viral image with inconsistent details</b></h4>
                             <p>
                                 AI signal detected; original-source tracing is
                                 recommended.
@@ -603,7 +603,7 @@ function ModulesView({
                             key={module.title}
                         >
                             <div className="module-number">{index + 1}</div>
-                            <h3>{module.title}</h3>
+                            <h3><b>{module.title}</b></h3>
                             <p>{module.description}</p>
                             <div className="linear-progress">
                                 <span
@@ -794,7 +794,7 @@ function VerificationView({
                     </div>
                 </div>
                 <div className="card">
-                    <h3>Five-step verification process</h3>
+                    <h3><b>Five-step verification process</b></h3>
                     <div className="workflow">
                         {workflow.map(([title, description], index) => (
                             <div className="workflow-step" key={title}>
@@ -1061,7 +1061,7 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
                 <div className="card">
                     <div className="card-header">
                         <div>
-                            <h2>Quality-based Leaderboard</h2>
+                            <h2><b>Quality-based Leaderboard</b></h2>
                             <div className="small muted">
                                 Scores reward accepted evidence, helpful
                                 reviews, and responsible participation—not
@@ -1112,7 +1112,7 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
                         <div className="badge-seal">
                             <Award />
                         </div>
-                        <h2>Verified MILDA Contributor</h2>
+                        <h2><b>Verified MILDA Contributor</b></h2>
                         <p className="muted small">
                             A course-completion badge showing that the user
                             finished MILDA training and the final Digital
@@ -1974,7 +1974,7 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                                       : 'Module preview'}
                             </span>
                             <h2>
-                                {activeModule + 1}. {activeLesson.title}
+                                {activeModule + 1}. <b>{activeLesson.title}</b>
                             </h2>
                             <div className="small muted">
                                 {activeLesson.description}
