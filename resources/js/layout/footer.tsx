@@ -22,70 +22,93 @@ export default function Footer() {
   return (
     <footer className="bg-[#231f20] px-[100px] py-12">
       <div className="mx-auto max-w-[1440px]">
-        <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <div>
+        <div className="mb-12 flex flex-col items-start justify-between gap-12 lg:flex-row">
+          <div className="shrink-0">
             <img
               src={assets.logoFooter}
               alt="MILDA"
               className="mb-6 h-16 w-auto object-contain"
             />
-            <p className="max-w-[315px] font-['Josefin_Sans',sans-serif] text-2xl text-[#efe6dd]">
+            <p className="max-w-[315px] font-['Josefin_Sans',sans-serif] text-xl text-[#efe6dd]">
               Empowering users to navigate the digital age with confidence.
             </p>
           </div>
 
-          <div>
-            <h3 className="mb-6 font-['Josefin_Sans',sans-serif] text-xl font-semibold text-[#7ebdc2]">
-              About
-            </h3>
-            <ul className="flex flex-col gap-6">
-              {footerAbout.map((link) => (
-                <li key={link}>
-                  <a
-                    href="#"
-                    className="font-['Josefin_Sans',sans-serif] text-base text-[#efe6dd] hover:text-[#7ebdc2]"
-                  >
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <div className="grid grid-cols-1 gap-12 sm:grid-cols-3 sm:gap-24">
+            <div>
+              <h3 className="mb-6 font-['Josefin_Sans',sans-serif] text-xl font-semibold text-[#7ebdc2]">
+                About
+              </h3>
+              <ul className="flex flex-col gap-6">
+                {footerAbout.map((link) => (
+                  <li key={link}>
+                    
+                      <a href="#"
+                      className="relative inline-block font-['Josefin_Sans',sans-serif] text-base text-[#efe6dd]
+                                 transition-colors duration-300
+                                 hover:text-[#7EBDC2]
+                                 after:absolute after:left-1/2 after:-bottom-1
+                                 after:h-[2px] after:w-0
+                                 after:bg-[#7EBDC2]
+                                 after:transition-all after:duration-300
+                                 after:-translate-x-1/2 hover:after:w-full"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div>
-            <h3 className="mb-6 font-['Josefin_Sans',sans-serif] text-xl font-semibold text-[#7ebdc2]">
-              Information
-            </h3>
-            <ul className="flex flex-col gap-6">
-              {footerInfo.map((link) => (
-                <li key={link}>
-                  <a
-                    href="#"
-                    className="font-['Josefin_Sans',sans-serif] text-base text-[#efe6dd] hover:text-[#7ebdc2]"
-                  >
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div>
+              <h3 className="mb-6 font-['Josefin_Sans',sans-serif] text-xl font-semibold text-[#7ebdc2]">
+                Information
+              </h3>
+              <ul className="flex flex-col gap-6">
+                {footerInfo.map((link) => (
+                  <li key={link}>
+                    
+                      <a href="#"
+                      className="relative inline-block font-['Josefin_Sans',sans-serif] text-base text-[#efe6dd]
+                                 transition-colors duration-300
+                                 hover:text-[#7EBDC2]
+                                 after:absolute after:left-1/2 after:-bottom-1
+                                 after:h-[2px] after:w-0
+                                 after:bg-[#7EBDC2]
+                                 after:transition-all after:duration-300
+                                 after:-translate-x-1/2 hover:after:w-full"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div>
-            <h3 className="mb-6 font-['Josefin_Sans',sans-serif] text-xl font-semibold text-[#7ebdc2]">
-              Team
-            </h3>
-            <ul className="flex flex-col gap-6">
-              {footerTeam.map((link) => (
-                <li key={link}>
-                  <a
-                    href="#"
-                    className="font-['Josefin_Sans',sans-serif] text-base text-[#efe6dd] hover:text-[#7ebdc2]"
-                  >
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div>
+              <h3 className="mb-6 font-['Josefin_Sans',sans-serif] text-xl font-semibold text-[#7ebdc2]">
+                Team
+              </h3>
+              <ul className="flex flex-col gap-6">
+                {footerTeam.map((link) => (
+                  <li key={link}>
+                    
+                      <a href="#"
+                      className="relative inline-block font-['Josefin_Sans',sans-serif] text-base text-[#efe6dd]
+                                 transition-colors duration-300
+                                 hover:text-[#7EBDC2]
+                                 after:absolute after:left-1/2 after:-bottom-1
+                                 after:h-[2px] after:w-0
+                                 after:bg-[#7EBDC2]
+                                 after:transition-all after:duration-300
+                                 after:-translate-x-1/2 hover:after:w-full"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -100,7 +123,7 @@ export default function Footer() {
 
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <div className="flex flex-col gap-2">
-            <img src="/images/team-quantumX.png" alt="Team QuantumX" className="w-[100px]" />
+            <img src="/images/quantumx.png" alt="Team QuantumX" className="w-[100px]" />
             <p className="font-['Josefin_Sans',sans-serif] text-base text-[#efe6dd]">
               © 2026 MILDA. Team QuantumX. All Rights Reserved.
             </p>
@@ -108,8 +131,21 @@ export default function Footer() {
 
           <div className="flex items-center gap-4">
             {Object.entries(socialIcons).map(([name, src]) => (
-              <a key={name} href="#" className="size-7 overflow-clip">
-                <img src={src} alt={name} className="size-full" />
+              <a key={name} href="#" className="group size-7 overflow-clip">
+                <span
+                  aria-label={name}
+                  className="block size-full bg-[#efe6dd] transition-colors duration-300 group-hover:bg-[#7EBDC2]"
+                  style={{
+                    WebkitMaskImage: `url(${src})`,
+                    maskImage: `url(${src})`,
+                    WebkitMaskSize: 'contain',
+                    maskSize: 'contain',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskPosition: 'center',
+                    maskPosition: 'center',
+                  }}
+                />
               </a>
             ))}
           </div>

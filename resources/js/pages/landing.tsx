@@ -1,7 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '@/layout/header';
 import Footer from '@/layout/footer';
+import { Search } from 'lucide-react';
 
 const assets = {
   heroGrid: 'https://www.figma.com/api/mcp/asset/0af67c53-2ccb-451e-a905-0a3f38d41de2',
@@ -23,6 +24,36 @@ const primaryButton =
 
 export default function Landing() {
   const [activeLink, setActiveLink] = useState('Dashboard');
+  const [contentTypeOpen, setContentTypeOpen] = useState(false);
+  const [contentTypeVisible, setContentTypeVisible] = useState(false);
+  const [contentType, setContentType] = useState('Select');
+  const [analyzerContent, setAnalyzerContent] = useState('');
+  const contentTypeRef = useRef<HTMLDivElement>(null);
+
+  const contentTypeOptions = ['Text/Claim', 'URL', 'Image'];
+
+  const openContentType = () => {
+    setContentTypeOpen(true);
+    requestAnimationFrame(() => setContentTypeVisible(true));
+  };
+
+  const closeContentType = () => {
+    setContentTypeVisible(false);
+    window.setTimeout(() => setContentTypeOpen(false), 200);
+  };
+
+  useEffect(() => {
+    if (!contentTypeOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (contentTypeRef.current && !contentTypeRef.current.contains(event.target as Node)) {
+        closeContentType();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [contentTypeOpen]);
 
   return (
     <>
@@ -188,33 +219,71 @@ export default function Landing() {
 
             <div className="relative mx-auto max-w-[1030px]">
               <div className="flex h-[73px] items-center overflow-hidden rounded-[95px] border border-[#9a9a9a] bg-white pl-[188px] pr-[160px]">
-                <p className="text-base text-[#707070]">Paste content to be reviewed here</p>
+                <input
+                  type="text"
+                  value={analyzerContent}
+                  onChange={(event) => setAnalyzerContent(event.target.value)}
+                  placeholder="Paste content to be reviewed here"
+                  className="h-full w-full bg-transparent text-base text-[#231f20] placeholder:text-[#707070] focus:outline-none"
+                />
               </div>
 
-              <div className="absolute left-5 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded-full bg-white px-4 py-2">
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-[#231f20]">Content Type</span>
-                  <div className="flex items-center gap-0.5">
-                    <span className="text-base text-[#707070]">Select</span>
-                    <div className="size-[19px] overflow-clip">
-                      <img src={assets.chevronDown} alt="" className="size-full" />
+              <div className="absolute left-5 top-1/2 -translate-y-1/2" ref={contentTypeRef}>
+                <button
+                  type="button"
+                  onClick={() => (contentTypeOpen ? closeContentType() : openContentType())}
+                  className="flex cursor-pointer items-center gap-1 rounded-full bg-white px-4 py-2"
+                >
+                  <div className="flex flex-col text-left">
+                    <span className="text-sm font-semibold text-[#231f20]">Content Type</span>
+                    <div className="flex items-center gap-0.5">
+                      <span className="text-base text-[#707070]">{contentType}</span>
+                      <div
+                        className={`size-[19px] overflow-clip transition-transform duration-200 ${
+                          contentTypeOpen ? 'rotate-180' : ''
+                        }`}
+                      >
+                        <img src={assets.chevronDown} alt="" className="size-full" />
+                      </div>
                     </div>
                   </div>
-                </div>
+                </button>
+
+                {contentTypeOpen && (
+                  <div
+                    className={`absolute left-0 top-full z-20 mt-3 w-[310px] rounded-2xl bg-white p-2 shadow-xl transition-opacity duration-200 ease-in-out ${
+                      contentTypeVisible ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    {contentTypeOptions.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => {
+                          setContentType(option);
+                          closeContentType();
+                        }}
+                        className="block w-full cursor-pointer rounded-lg px-4 py-3 text-left text-base text-[#231f20] transition-colors duration-200 hover:bg-[#fff9f4]"
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <button
                 type="button"
-                className="absolute right-[10px] top-1/2 flex -translate-y-1/2 items-center gap-2 rounded-[66px] bg-[#afafaf] px-6 py-3.5"
+                className="group absolute right-[10px] top-1/2 flex -translate-y-1/2 cursor-pointer items-center gap-2 rounded-[66px] border border-[#9a9a9a] bg-[#231F20] px-6 py-3.5 transition-colors duration-300 ease-in-out hover:border-transparent hover:bg-[#7ebdc2]"
               >
-                <div className="size-6 overflow-clip">
-                  <img src={assets.searchIcon} alt="" className="size-full" />
-                </div>
-                <span className="text-base font-semibold text-[#231f20]">Analyze</span>
+                <Search className="size-6 text-[#FFF9F4] transition-colors duration-300 ease-in-out group-hover:text-[#231F20]" />
+                <span className="text-base font-semibold text-[#FFF9F4] transition-colors duration-300 ease-in-out group-hover:text-[#231F20]">
+                  Analyze
+                </span>
               </button>
             </div>
 
-            <p className="mt-4 text-center text-xs text-[#707070]">
+            <p className="mt-4 text-right mr-27 text-xs text-[#707070]">
               AI guidance is advisory. Final status requires credible evidence and moderation.
             </p>
           </div>
