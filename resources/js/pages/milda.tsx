@@ -244,6 +244,8 @@ function DashboardView({
     openLesson: (index: number) => void;
     analyzeQuickClaim: () => void;
 }) {
+    const [quickTab, setQuickTab] = useState<VerifyTab>('url');
+
     return (
         <section className="view active student-view student-dashboard">
             <StudentPageTitle
@@ -254,29 +256,103 @@ function DashboardView({
                 <div className="student-primary">
                     <div className="student-card dashboard-verify-card">
                         <h2>Verify Content</h2>
-                        <div className="student-tabs">
-                            <button className="active" type="button">
-                                <Link /> Paste Link
-                            </button>
-                            <button type="button">
-                                <FileText /> Enter Text
-                            </button>
-                            <button type="button">
-                                <Image /> Upload Image
-                            </button>
+                        <div
+                            aria-label="Verification input type"
+                            className="student-tabs"
+                            role="tablist"
+                        >
+                            {(
+                                [
+                                    ['url', 'Paste Link', Link],
+                                    ['text', 'Enter Text', FileText],
+                                    ['image', 'Upload Image', Image],
+                                ] as [VerifyTab, string, LucideIcon][]
+                            ).map(([tab, label, Icon]) => (
+                                <button
+                                    aria-selected={quickTab === tab}
+                                    className={quickTab === tab ? 'active' : ''}
+                                    key={tab}
+                                    onClick={() => {
+                                        setQuickTab(tab);
+                                        setQuickClaim('');
+                                    }}
+                                    role="tab"
+                                    type="button"
+                                >
+                                    <Icon /> {label}
+                                </button>
+                            ))}
                         </div>
-                        <div className="student-verify-input">
-                            <Link />
-                            <input
-                                aria-label="Content to verify"
-                                onChange={(event) =>
-                                    setQuickClaim(event.target.value)
-                                }
-                                placeholder="Paste a URL or enter a claim to verify"
-                                value={quickClaim}
-                            />
+                        <div
+                            className={`student-verify-input ${quickTab}`}
+                            role="tabpanel"
+                        >
+                            {quickTab === 'image' ? (
+                                <label className="student-upload-zone">
+                                    <input
+                                        accept="image/png,image/jpeg,image/webp"
+                                        aria-label="Upload an image to verify"
+                                        onChange={(event) =>
+                                            setQuickClaim(
+                                                event.target.files?.[0]?.name ??
+                                                    '',
+                                            )
+                                        }
+                                        type="file"
+                                    />
+                                    <span className="upload-zone-icon">
+                                        <Upload />
+                                    </span>
+                                    <span className="upload-zone-copy">
+                                        <strong>
+                                            {quickClaim ||
+                                                'Choose an image to verify'}
+                                        </strong>
+                                        <small>
+                                            PNG, JPG, or WEBP · Maximum 10 MB
+                                        </small>
+                                    </span>
+                                    <span className="upload-browse-button">
+                                        Browse files
+                                    </span>
+                                </label>
+                            ) : (
+                                <label className="student-verify-field">
+                                    {quickTab === 'url' ? (
+                                        <Link />
+                                    ) : (
+                                        <FileText />
+                                    )}
+                                    {quickTab === 'url' ? (
+                                        <input
+                                            aria-label="Link to verify"
+                                            onChange={(event) =>
+                                                setQuickClaim(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            placeholder="Paste the full URL of an article or social post"
+                                            type="url"
+                                            value={quickClaim}
+                                        />
+                                    ) : (
+                                        <textarea
+                                            aria-label="Text to verify"
+                                            onChange={(event) =>
+                                                setQuickClaim(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            placeholder="Enter the claim, caption, or passage you want to verify"
+                                            rows={3}
+                                            value={quickClaim}
+                                        />
+                                    )}
+                                </label>
+                            )}
                             <button
                                 className="student-primary-button"
+                                disabled={!quickClaim.trim()}
                                 onClick={analyzeQuickClaim}
                                 type="button"
                             >
@@ -667,8 +743,15 @@ function VerificationView({
     runAnalysis: () => void;
     submitForReview: () => void;
 }) {
+    const [verifyImageName, setVerifyImageName] = useState('');
     const claim =
         verifyClaim || 'Drinking lemon water removes all toxins from the body.';
+    const hasVerifyInput =
+        tab === 'url'
+            ? Boolean(verifyUrl.trim())
+            : tab === 'text'
+              ? Boolean(verifyClaim.trim())
+              : Boolean(verifyImageName);
 
     return (
         <section className="view active student-view student-verify">
@@ -680,7 +763,11 @@ function VerificationView({
             <div className="student-page-layout verify-page-layout">
                 <div className="student-primary">
                     <div className="student-card verify-entry-card">
-                        <div className="student-tabs">
+                        <div
+                            aria-label="Verification input type"
+                            className="student-tabs"
+                            role="tablist"
+                        >
                             {(
                                 [
                                     ['url', 'Paste Link', Link],
@@ -689,55 +776,87 @@ function VerificationView({
                                 ] as [VerifyTab, string, LucideIcon][]
                             ).map(([tabName, label, Icon]) => (
                                 <button
+                                    aria-selected={tab === tabName}
                                     className={tab === tabName ? 'active' : ''}
                                     key={tabName}
                                     onClick={() => setTab(tabName)}
+                                    role="tab"
                                     type="button"
                                 >
                                     <Icon /> {label}
                                 </button>
                             ))}
                         </div>
-                        <div className="student-verify-input">
+                        <div
+                            className={`student-verify-input ${tab}`}
+                            role="tabpanel"
+                        >
                             {tab === 'image' ? (
-                                <>
-                                    <Upload />
+                                <label className="student-upload-zone">
                                     <input
-                                        aria-label="Upload image"
                                         accept="image/*"
+                                        aria-label="Upload image"
+                                        onChange={(event) => {
+                                            const fileName =
+                                                event.target.files?.[0]?.name ??
+                                                '';
+
+                                            setVerifyImageName(fileName);
+                                            setVerifyClaim(
+                                                fileName
+                                                    ? `Uploaded image: ${fileName}`
+                                                    : '',
+                                            );
+                                        }}
                                         type="file"
                                     />
-                                </>
+                                    <span className="upload-zone-icon">
+                                        <Upload />
+                                    </span>
+                                    <span className="upload-zone-copy">
+                                        <strong>
+                                            {verifyImageName ||
+                                                'Choose a screenshot or image'}
+                                        </strong>
+                                        <small>
+                                            PNG, JPG, or WEBP · Maximum 10 MB
+                                        </small>
+                                    </span>
+                                    <span className="upload-browse-button">
+                                        Browse files
+                                    </span>
+                                </label>
                             ) : (
-                                <>
+                                <label className="student-verify-field">
                                     {tab === 'url' ? <Link /> : <FileText />}
-                                    <input
-                                        aria-label="Content to verify"
-                                        onChange={(event) =>
-                                            tab === 'url'
-                                                ? setVerifyUrl(
-                                                      event.target.value,
-                                                  )
-                                                : setVerifyClaim(
-                                                      event.target.value,
-                                                  )
-                                        }
-                                        placeholder={
-                                            tab === 'url'
-                                                ? 'Paste a URL or enter a claim to verify'
-                                                : 'Enter a claim or caption to verify'
-                                        }
-                                        type={tab === 'url' ? 'url' : 'text'}
-                                        value={
-                                            tab === 'url'
-                                                ? verifyUrl
-                                                : verifyClaim
-                                        }
-                                    />
-                                </>
+                                    {tab === 'url' ? (
+                                        <input
+                                            aria-label="Link to verify"
+                                            onChange={(event) =>
+                                                setVerifyUrl(event.target.value)
+                                            }
+                                            placeholder="Paste the full URL of an article or social post"
+                                            type="url"
+                                            value={verifyUrl}
+                                        />
+                                    ) : (
+                                        <textarea
+                                            aria-label="Text to verify"
+                                            onChange={(event) =>
+                                                setVerifyClaim(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            placeholder="Enter the claim, caption, or passage you want to verify"
+                                            rows={4}
+                                            value={verifyClaim}
+                                        />
+                                    )}
+                                </label>
                             )}
                             <button
                                 className="student-primary-button"
+                                disabled={!hasVerifyInput}
                                 onClick={runAnalysis}
                                 type="button"
                             >
@@ -1512,7 +1631,15 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
 
                     <div className="student-card leaderboard-table-card">
                         <div className="student-table-wrap">
-                            <table>
+                            <table className="leaderboard-table">
+                                <colgroup>
+                                    <col className="rank-column" />
+                                    <col className="contributor-column" />
+                                    <col className="institution-column" />
+                                    <col className="sources-column" />
+                                    <col className="reviews-column" />
+                                    <col className="score-column" />
+                                </colgroup>
                                 <thead>
                                     <tr>
                                         <th>Rank</th>
@@ -1526,17 +1653,31 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
                                 <tbody>
                                     {rows.map((row) => (
                                         <tr key={row[0]}>
-                                            <td>{row[0]}</td>
                                             <td>
-                                                <span className="mini-avatar">
-                                                    {row[1]}
+                                                <span className="table-rank">
+                                                    {row[0]}
                                                 </span>
-                                                <strong>{row[2]}</strong>
                                             </td>
-                                            <td>{row[3]}</td>
-                                            <td>{row[4]}</td>
-                                            <td>{row[5]}</td>
-                                            <td>{row[6]}</td>
+                                            <td>
+                                                <div className="leaderboard-person">
+                                                    <span className="mini-avatar">
+                                                        {row[1]}
+                                                    </span>
+                                                    <strong>{row[2]}</strong>
+                                                </div>
+                                            </td>
+                                            <td className="institution-cell">
+                                                {row[3]}
+                                            </td>
+                                            <td className="numeric-cell">
+                                                {row[4]}
+                                            </td>
+                                            <td className="numeric-cell">
+                                                {row[5]}
+                                            </td>
+                                            <td className="numeric-cell score-cell">
+                                                {row[6]}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

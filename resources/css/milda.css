@@ -897,7 +897,7 @@ input,textarea,select.form-control { width:100%;max-width:100%;border:1px solid 
 
 /* Contributions */
 .contribution-chart-card { padding:13px 18px 8px; }.activity-chart { height:142px;display:grid;grid-template-columns:repeat(7,1fr);gap:15px;align-items:end;margin-top:5px;padding:0 16px;border-bottom:1px solid #dfe4e6;background:repeating-linear-gradient(to bottom,transparent 0,transparent 38px,#e8ecee 39px); }.activity-column { height:130px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px; }.activity-column strong { font-size:9px;font-weight:500; }.activity-column > span { width:33px;max-height:105px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#08a4b2,#078a98); }.activity-column small { margin-bottom:-17px;color:#52616b;font-size:9px; }
-.contribution-history-card { padding:12px; }.history-filters { display:flex;gap:20px; }.history-filters button { min-width:74px;padding:6px 12px;border:1px solid var(--student-border);border-radius:6px;background:#fff;color:#4d5961;font-size:9px; }.history-filters button.active { border-color:var(--student-teal);background:var(--student-teal);color:#fff; }.student-table-wrap { width:100%;overflow-x:auto; }.student-table-wrap table { min-width:700px;margin-top:8px; }.student-table-wrap th,.student-table-wrap td { padding:8px 10px;font-size:9px; }.student-table-wrap th { background:#fff;text-transform:none;letter-spacing:0; }.student-table-wrap td:first-child { display:flex;align-items:center;gap:9px; }.student-table-wrap td svg { width:15px;height:15px; }.points { color:var(--student-teal-dark); }
+.contribution-history-card { padding:12px; }.history-filters { display:flex;gap:20px; }.history-filters button { min-width:74px;padding:6px 12px;border:1px solid var(--student-border);border-radius:6px;background:#fff;color:#4d5961;font-size:9px; }.history-filters button.active { border-color:var(--student-teal);background:var(--student-teal);color:#fff; }.student-table-wrap { width:100%;overflow-x:auto; }.student-table-wrap table { min-width:700px;margin-top:8px; }.student-table-wrap th,.student-table-wrap td { padding:8px 10px;font-size:9px; }.student-table-wrap th { background:#fff;text-transform:none;letter-spacing:0; }.contribution-history-card .student-table-wrap td:first-child { display:flex;align-items:center;gap:9px; }.student-table-wrap td svg { width:15px;height:15px; }.points { color:var(--student-teal-dark); }
 .portfolio-progress-card > div { display:grid;grid-template-columns:105px 1fr;gap:12px;align-items:center; }.portfolio-ring { width:96px;height:96px;display:grid;place-items:center;border:9px solid #e7eaeb;border-top-color:var(--student-teal);border-right-color:var(--student-teal);border-radius:50%;font-size:21px;font-weight:650; }.contributor-badge-detail > .verified-contributor-card { margin:-17px -17px 10px;border:0;border-radius:0;border-bottom:1px solid var(--student-border);box-shadow:none; }.contributor-badge-detail > p { display:flex;align-items:center;gap:8px;margin:11px 0; }.contributor-badge-detail > p svg { width:17px;height:17px;color:var(--student-teal); }.export-card { text-align:center; }.export-card button { width:100%; }.export-card p { margin:9px 20px 0; }
 
 /* Leaderboard */
@@ -999,4 +999,114 @@ input,textarea,select.form-control { width:100%;max-width:100%;border:1px solid 
   .lesson-modal-topbar { min-height:48px;padding:7px 11px; }.lesson-breadcrumb span:first-of-type,.lesson-breadcrumb > svg:nth-of-type(2) { display:none; }
   .lesson-modal-title h2 { font-size:18px; }.lesson-modal-meta span { font-size:8px; }.lesson-modal-meta span:last-child { display:none; }
   .lesson-objective-panel,.lesson-quiz-panel { padding:12px; }.lesson-modal-actions { flex-direction:column-reverse; }.lesson-modal-actions .student-outline-button,.lesson-modal-actions .student-primary-button { width:100%; }
+}
+
+/* Readability floor for student-facing content */
+.student-view { font-size:14px;line-height:1.5; }
+.student-view .student-page-title p { font-size:14px; }
+.student-view .student-card h2,.student-view .student-side-card h3 { font-size:15px; }
+.student-view .student-section-title { font-size:16px; }
+.student-view p { font-size:12px;line-height:1.6; }
+.student-view small { font-size:10.5px;line-height:1.45; }
+.student-view .student-primary-button,.student-view .student-outline-button { font-size:12px; }
+.student-view .student-text-link { font-size:11.5px; }
+.student-view .student-tabs button { font-size:12px; }
+.student-view .student-stat-card span { font-size:11px; }
+.student-view .student-stat-card small { font-size:10px; }
+.student-view .learning-preview h3,.student-view .resume-content h2 { font-size:13px; }
+.student-view .learning-module-card strong { font-size:10.5px; }
+.student-view .learning-module-card small { font-size:10px; }
+.student-view .review-row strong { font-size:11px; }
+.student-view .student-status { padding:5px 8px;font-size:10px; }
+.student-view .claim-review-card dl div { font-size:10.5px; }
+.student-view .analysis-card small,.student-view .trusted-source-row small { font-size:10px; }
+.student-view .analysis-card p,.student-view .analysis-card li { font-size:10.5px; }
+.student-view .trusted-source-row strong { font-size:11px; }
+.student-view .trusted-source-row a { font-size:9.5px; }
+.student-view .community-claim small,.student-view .community-claim > span { font-size:10px; }
+.student-view .community-claim h2 { font-size:14px; }
+.student-view .community-evidence > div > span { font-size:9.5px; }
+.student-view .community-evidence strong { font-size:11px; }
+.student-view .student-table-wrap th,.student-view .student-table-wrap td { font-size:10.5px; }
+.student-view .activity-column strong,.student-view .activity-column small { font-size:10px; }
+.student-view .your-rank-card small,.student-view .your-rank-card > div:first-child span,.student-view .your-rank-card p { font-size:10px; }
+.dashboard-verify-card input[type="file"] { padding-block:8px;font-size:11px; }
+.dashboard-verify-card input[type="file"]::file-selector-button { margin-right:10px;padding:7px 10px;border:0;border-radius:6px;background:#e7f5f6;color:#047a87;font:inherit;font-weight:700;cursor:pointer; }
+
+.student-lesson-modal { font-size:13px; }
+.student-lesson-modal .lesson-modal-title > p { font-size:11.5px; }
+.student-lesson-modal .lesson-modal-meta span { font-size:10px; }
+.student-lesson-modal .lesson-panel-heading h3 { font-size:14px; }
+.student-lesson-modal .lesson-panel-heading p { font-size:10px; }
+.student-lesson-modal .objective strong { font-size:10.5px; }
+.student-lesson-modal .objective p,.student-lesson-modal .lesson-activity p { font-size:10px; }
+.student-lesson-modal .lesson-activity strong { font-size:10.5px; }
+.student-lesson-modal .lesson-quiz-panel h4 { font-size:12px; }
+.student-lesson-modal .quiz-option > strong { font-size:10px; }
+.student-lesson-modal .quiz-feedback { font-size:10px; }
+
+/* Larger, mode-specific verification inputs */
+.student-verify-input { display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:stretch;margin-top:14px; }
+.student-verify-field { min-width:0;display:block;position:relative;margin:0;color:var(--student-muted); }
+.student-verify-field > svg { position:absolute;left:16px;top:18px;z-index:1;width:21px;height:21px;color:var(--student-teal);pointer-events:none; }
+.student-verify-field input,.student-verify-field textarea { width:100%;grid-column:auto;margin:0;padding:15px 16px 15px 50px;border:1px solid #cdd7da;border-radius:9px;background:#fff;color:var(--student-text);font-size:14px;line-height:1.5;box-shadow:inset 0 1px 1px rgba(20,48,56,.02); }
+.student-verify-field input { height:56px; }
+.student-verify-field textarea { min-height:104px;resize:vertical; }
+.student-verify-field input::placeholder,.student-verify-field textarea::placeholder { color:#849099;opacity:1; }
+.student-verify-input .student-primary-button { min-width:190px;min-height:56px;padding-inline:20px;border-radius:9px;font-size:13px; }
+.student-verify-input.text,.student-verify-input.image { grid-template-columns:1fr; }
+.student-verify-input.text .student-primary-button,.student-verify-input.image .student-primary-button { width:max-content;min-width:190px;justify-self:end; }
+.student-upload-zone { min-width:0;min-height:106px;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;align-items:center;margin:0;padding:16px 18px;border:1.5px dashed #8fc8cd;border-radius:10px;background:#f7fcfc;color:var(--student-text);cursor:pointer;transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease; }
+.student-upload-zone:hover { border-color:var(--student-teal);background:#effafb;box-shadow:0 5px 16px rgba(7,151,165,.08); }
+.student-upload-zone input[type="file"] { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+.upload-zone-icon { width:46px;height:46px;display:grid;place-items:center;border-radius:12px;background:#dff3f5;color:var(--student-teal); }.upload-zone-icon svg { width:23px;height:23px; }
+.upload-zone-copy { min-width:0;display:grid;gap:3px; }.upload-zone-copy strong { overflow:hidden;font-size:13px;text-overflow:ellipsis;white-space:nowrap; }.upload-zone-copy small { color:var(--student-muted);font-size:11px; }
+.upload-browse-button { display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:9px 13px;border:1px solid var(--student-teal);border-radius:7px;background:#fff;color:var(--student-teal-dark);font-size:11px;font-weight:750; }
+.verify-entry-card { padding:0 18px 18px; }.dashboard-verify-card { padding:18px; }
+
+/* Larger global student typography scale */
+.student-shell .nav button { font-size:15px; }
+.student-top-search input { font-size:14px; }
+.student-profile strong { font-size:14px; }.student-profile small { font-size:11.5px; }
+.student-page-title h1 { font-size:33px; }.student-view .student-page-title p { font-size:15px; }
+.student-view { font-size:15px; }
+.student-view .student-card h2,.student-view .student-side-card h3 { font-size:16.5px; }
+.student-view .student-section-title { font-size:17px; }
+.student-view p { font-size:13.5px;line-height:1.65; }
+.student-view small { font-size:11.5px;line-height:1.5; }
+.student-view .student-primary-button,.student-view .student-outline-button { font-size:13px; }
+.student-view .student-text-link { font-size:12.5px; }
+.student-view .student-tabs button { padding:10px 12px;font-size:13px; }
+.student-view .student-stat-card span { font-size:12px; }.student-view .student-stat-card strong { font-size:26px; }.student-view .student-stat-card small { font-size:11px; }
+.student-view .learning-preview h3,.student-view .resume-content h2 { font-size:14px; }
+.student-view .learning-module-card strong { font-size:12px; }.student-view .learning-module-card small { font-size:11px; }
+.student-view .review-row strong { font-size:12px; }.student-view .student-status { font-size:11px; }
+.student-view .claim-review-card dl div { font-size:12px; }.student-view .analysis-card small,.student-view .trusted-source-row small { font-size:11px; }
+.student-view .analysis-card p,.student-view .analysis-card li { font-size:12px; }.student-view .trusted-source-row strong { font-size:12px; }.student-view .trusted-source-row a { font-size:10.5px; }
+.student-view .community-claim small,.student-view .community-claim > span { font-size:11px; }.student-view .community-claim h2 { font-size:15px; }.student-view .community-evidence > div > span { font-size:10.5px; }.student-view .community-evidence strong { font-size:12px; }
+.student-view .student-table-wrap th,.student-view .student-table-wrap td { font-size:11.5px; }.student-view .activity-column strong,.student-view .activity-column small { font-size:11px; }
+.student-shell .footer { font-size:13px; }
+
+.student-lesson-modal { font-size:14px; }.student-lesson-modal .lesson-modal-title > p { font-size:13px; }.student-lesson-modal .lesson-modal-meta span { font-size:11px; }.student-lesson-modal .lesson-panel-heading h3 { font-size:15px; }.student-lesson-modal .lesson-panel-heading p { font-size:11px; }.student-lesson-modal .objective strong { font-size:12px; }.student-lesson-modal .objective p,.student-lesson-modal .lesson-activity p { font-size:11px; }.student-lesson-modal .lesson-activity strong { font-size:12px; }.student-lesson-modal .lesson-quiz-panel h4 { font-size:13px; }.student-lesson-modal .quiz-option > strong { font-size:11.5px; }.student-lesson-modal .quiz-feedback { font-size:11px; }
+
+@media (max-width:650px) {
+  .student-verify-input,.student-verify-input.url { grid-template-columns:1fr; }.student-verify-input .student-primary-button { width:100%;min-width:0;justify-self:stretch; }.student-upload-zone { grid-template-columns:42px minmax(0,1fr);padding:14px; }.upload-browse-button { grid-column:1/-1;width:100%; }.student-page-title h1 { font-size:28px; }.student-view { font-size:14px; }
+}
+
+/* Leaderboard table alignment and responsive behavior */
+.leaderboard-table-card { padding:0;overflow:hidden; }
+.leaderboard-table-card .student-table-wrap { overflow-x:auto;scrollbar-width:thin;scrollbar-color:#a8d4d8 #f1f5f6; }
+.leaderboard-table { width:100%;min-width:780px;margin:0 !important;table-layout:fixed;border-collapse:collapse; }
+.leaderboard-table .rank-column { width:8%; }.leaderboard-table .contributor-column { width:23%; }.leaderboard-table .institution-column { width:29%; }.leaderboard-table .sources-column { width:16%; }.leaderboard-table .reviews-column { width:12%; }.leaderboard-table .score-column { width:12%; }
+.student-view .leaderboard-table th,.student-view .leaderboard-table td { display:table-cell;height:54px;padding:11px 14px;vertical-align:middle;font-size:11.5px;line-height:1.35; }
+.student-view .leaderboard-table th { height:46px;background:#f6f9fa;color:#52616a;font-size:10.5px;font-weight:750;white-space:normal; }
+.leaderboard-table th:first-child,.leaderboard-table td:first-child { text-align:center; }
+.leaderboard-table th:nth-child(n+4),.leaderboard-table td:nth-child(n+4) { text-align:center; }
+.leaderboard-table tbody tr { border-bottom:1px solid #e5eaec; }.leaderboard-table tbody tr:last-child { border-bottom:0; }.leaderboard-table tbody tr:nth-child(even) { background:#fbfdfd; }.leaderboard-table tbody tr:hover { background:#eef9fa; }
+.table-rank { width:28px;height:28px;display:inline-grid;place-items:center;border-radius:50%;background:#edf3f4;color:#42515a;font-size:11px;font-weight:800; }
+.leaderboard-person { min-width:0;display:flex;align-items:center;gap:10px; }.leaderboard-person .mini-avatar { width:30px;height:30px;flex:0 0 auto;font-size:9px; }.leaderboard-person strong { min-width:0;overflow:hidden;font-size:11.5px;text-overflow:ellipsis;white-space:nowrap; }
+.institution-cell { color:#5d6a73;overflow-wrap:anywhere; }.numeric-cell { color:#34434c;font-variant-numeric:tabular-nums; }.score-cell { color:var(--student-teal-dark);font-weight:800; }
+
+@media (max-width:650px) {
+  .leaderboard-table { min-width:720px; }.student-view .leaderboard-table th,.student-view .leaderboard-table td { height:50px;padding:9px 11px;font-size:11px; }.leaderboard-table-card .student-table-wrap { overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch; }
 }
