@@ -842,7 +842,7 @@ input,textarea,select.form-control { width:100%;max-width:100%;border:1px solid 
 .student-verify-input > svg { width:18px;height:18px;margin-left:9px;color:#66747e; }
 .student-verify-input input { grid-column:2;height:41px;margin-left:-37px;padding-left:42px;background:#fff;border-color:#cfd7da;border-radius:7px; }
 .student-verify-input .student-primary-button { min-width:180px; }
-.dashboard-lower-grid { display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:13px; }
+.dashboard-lower-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px; }
 .dashboard-learning-card h2,.dashboard-reviews-card h2 { display:flex;align-items:center;gap:9px; }
 .learning-preview { display:grid;grid-template-columns:118px 1fr;gap:12px;margin:12px 0 10px;padding:10px;border:1px solid #e4e8e9;border-radius:9px; }
 .learning-illustration { min-height:104px;display:grid;place-items:center;position:relative;border-radius:7px;background:linear-gradient(145deg,#eff3f5,#e5ecef);color:#173b4b; }
