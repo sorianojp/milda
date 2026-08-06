@@ -1,17 +1,39 @@
 import { Head } from '@inertiajs/react';
 import {
     Award,
-    BarChart3,
+    BadgeCheck,
     Bell,
     BookOpen,
+    Bookmark,
+    Bot,
+    Building2,
     Check,
+    ChevronRight,
+    CircleCheck,
+    CirclePlay,
+    ClipboardList,
+    Clock3,
+    Download,
+    ExternalLink,
     FileText,
+    Flame,
+    Flag,
+    GraduationCap,
+    HelpCircle,
     Home,
+    Image,
+    Info,
     Link,
+    LockKeyhole,
     Menu,
+    MessageSquare,
+    Plus,
     Search,
     ShieldCheck,
     Sparkles,
+    Target,
+    ThumbsUp,
+    Trophy,
     Upload,
     Users,
     X,
@@ -24,10 +46,9 @@ import {
     analysisScenarios,
     communityItems as initialCommunityItems,
     courseModules as initialCourseModules,
-    demoClaim,
     lessonObjectives,
 } from '@/data/milda';
-import type { AnalysisScenario, CommunityItem } from '@/data/milda';
+import type { AnalysisScenario } from '@/data/milda';
 import '../../css/milda.css';
 
 type View =
@@ -35,89 +56,35 @@ type View =
     | 'learn'
     | 'verify'
     | 'community'
-    | 'leaderboard'
-    | 'instructor'
-    | 'admin';
-type Role = 'student' | 'instructor' | 'admin';
-type ModuleFilter = 'all' | 'completed' | 'progress' | 'locked';
+    | 'contributions'
+    | 'leaderboard';
 type CommunityFilter = 'all' | 'verified' | 'review' | 'media';
 type VerifyTab = 'text' | 'url' | 'image';
-type ModalName = 'lesson' | 'tour' | 'policy' | null;
-
-type MildaProps = {
-    syllabusUrl: string;
-};
+type ModalName = 'lesson' | 'policy' | null;
 
 type ToastMessage = {
     id: number;
     message: string;
 };
 
-const viewInfo: Record<View, [string, string]> = {
-    dashboard: ['Student Dashboard', 'Your learning and verification progress'],
-    learn: [
-        'Course Modules',
-        'Structured Media and Information Literacy learning',
-    ],
-    verify: [
-        'Verify Content',
-        'AI-assisted guidance and evidence-based verification',
-    ],
-    community: [
-        'Verification Hub',
-        'Reports, trusted sources, reviews, and disputes',
-    ],
-    leaderboard: [
-        'Leaderboard & Badge',
-        'Quality-based recognition for responsible contributors',
-    ],
-    instructor: [
-        'Instructor Dashboard',
-        'Course progress, portfolios, and badge eligibility',
-    ],
-    admin: [
-        'Admin & Safeguards',
-        'Moderation, appeals, privacy, and responsible AI',
-    ],
-};
-
-const navGroups: {
+const studentNavigation: {
+    view: View;
     label: string;
-    items: { view: View; label: string; icon: LucideIcon }[];
+    icon: LucideIcon;
 }[] = [
+    { view: 'dashboard', label: 'Dashboard', icon: Home },
+    { view: 'learn', label: 'Learn', icon: BookOpen },
+    { view: 'verify', label: 'Verify Content', icon: Search },
+    { view: 'community', label: 'Community', icon: Users },
     {
-        label: 'Learning',
-        items: [
-            { view: 'dashboard', label: 'Dashboard', icon: Home },
-            { view: 'learn', label: 'Course Modules', icon: BookOpen },
-            { view: 'verify', label: 'Verify Content', icon: Check },
-        ],
+        view: 'contributions',
+        label: 'My Contributions',
+        icon: ClipboardList,
     },
-    {
-        label: 'Community',
-        items: [
-            { view: 'community', label: 'Verification Hub', icon: Users },
-            {
-                view: 'leaderboard',
-                label: 'Leaderboard & Badge',
-                icon: Award,
-            },
-        ],
-    },
-    {
-        label: 'Management',
-        items: [
-            { view: 'instructor', label: 'Instructor', icon: BarChart3 },
-            {
-                view: 'admin',
-                label: 'Admin & Safeguards',
-                icon: ShieldCheck,
-            },
-        ],
-    },
+    { view: 'leaderboard', label: 'Leaderboard', icon: Trophy },
 ];
 
-function StatCard({
+function StudentStatCard({
     icon: Icon,
     label,
     value,
@@ -129,13 +96,115 @@ function StatCard({
     detail: string;
 }) {
     return (
-        <div className="card stat">
-            <div className="stat-icon">
+        <div className="student-stat-card">
+            <div className="student-stat-icon">
                 <Icon />
             </div>
-            <div className="stat-label">{label}</div>
-            <div className="stat-value">{value}</div>
-            <div className="stat-delta">{detail}</div>
+            <div>
+                <span>{label}</span>
+                <strong>{value}</strong>
+                <small>{detail}</small>
+            </div>
+        </div>
+    );
+}
+
+function StudentPageTitle({
+    title,
+    subtitle,
+}: {
+    title: string;
+    subtitle: string;
+}) {
+    return (
+        <div className="student-page-title">
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
+        </div>
+    );
+}
+
+function StudentProgress({ value }: { value: number }) {
+    return (
+        <div
+            aria-label={`${value}% complete`}
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={value}
+            className="student-progress"
+            role="progressbar"
+        >
+            <span style={{ width: `${value}%` }} />
+        </div>
+    );
+}
+
+function MissionCard({ title = 'Current Mission' }: { title?: string }) {
+    return (
+        <div className="student-side-card mission-card">
+            <h3>
+                <Target /> {title}
+            </h3>
+            <h4>Check Before You Share</h4>
+            <p>
+                Verify 5 pieces of content this week and help build a safer
+                information environment.
+            </p>
+            <div className="mission-progress-row">
+                <StudentProgress value={60} />
+                <span>3/5</span>
+            </div>
+            <small>
+                <Clock3 /> Mission resets in 4 days
+            </small>
+        </div>
+    );
+}
+
+function ContributorList({
+    title = 'Top Contributors',
+    onView,
+}: {
+    title?: string;
+    onView?: () => void;
+}) {
+    return (
+        <div className="student-side-card contributor-card">
+            <h3>
+                <Trophy /> {title}
+            </h3>
+            {[
+                ['1', 'Maya Chen', '1,250'],
+                ['2', 'Liam Okafor', '980'],
+                ['3', 'Sofia Martinez', '870'],
+            ].map(([rank, name, score]) => (
+                <div className="contributor-row" key={name}>
+                    <span className={`rank rank-${rank}`}>{rank}</span>
+                    <span>{name}</span>
+                    <strong>{score}</strong>
+                </div>
+            ))}
+            <button
+                className="student-text-link"
+                onClick={onView}
+                type="button"
+            >
+                View full leaderboard <ChevronRight />
+            </button>
+        </div>
+    );
+}
+
+function VerifiedContributorCard() {
+    return (
+        <div className="student-side-card verified-contributor-card">
+            <div className="student-badge-mark">
+                <Award />
+            </div>
+            <div>
+                <h3>Verified MILDA Contributor</h3>
+                <p>Thank you for making a difference!</p>
+            </div>
         </div>
     );
 }
@@ -160,457 +229,418 @@ function ChecklistItem({
     );
 }
 
-function IntroScreen({
-    onEnter,
-    syllabusUrl,
-}: {
-    onEnter: (role: Role) => void;
-    syllabusUrl: string;
-}) {
-    const roles: {
-        role: Role;
-        title: string;
-        description: string;
-        icon: LucideIcon;
-    }[] = [
-        {
-            role: 'student',
-            title: 'Student',
-            description: 'Learn, verify, complete missions, and earn a badge',
-            icon: BookOpen,
-        },
-        {
-            role: 'instructor',
-            title: 'Instructor',
-            description: 'Monitor progress and review verification portfolios',
-            icon: BarChart3,
-        },
-        {
-            role: 'admin',
-            title: 'Administrator',
-            description: 'Moderate reports, sources, appeals, and safeguards',
-            icon: ShieldCheck,
-        },
-    ];
-
-    return (
-        <section className="intro-screen">
-            <div className="intro-card">
-                <div className="intro-copy">
-                    <div className="intro-logo">
-                        <div className="intro-logo-mark">M</div>
-                        <div>
-                            <strong>MILDA</strong>
-                            <div className="intro-team">
-                                Team QuantumX · UNESCO Youth Hackathon 2026
-                            </div>
-                        </div>
-                    </div>
-                    <h1>
-                        Learn to verify.
-                        <br />
-                        Build digital trust.
-                    </h1>
-                    <p>
-                        MILDA is a course-centered Media and Information
-                        Literacy ecosystem that combines structured learning,
-                        AI-assisted guidance, and evidence-based community
-                        verification.
-                    </p>
-                    <div className="intro-tags">
-                        <span className="intro-tag">Course Program</span>
-                        <span className="intro-tag">Browser Extension</span>
-                        <span className="intro-tag">Web App</span>
-                        <span className="intro-tag">Mobile App</span>
-                    </div>
-                </div>
-                <div className="role-panel">
-                    <h2>Explore the prototype</h2>
-                    <p>Select a role to preview the MILDA experience.</p>
-                    <div className="role-grid">
-                        {roles.map(
-                            ({ role, title, description, icon: RoleIcon }) => (
-                                <button
-                                    className="role-card"
-                                    key={role}
-                                    onClick={() => onEnter(role)}
-                                    type="button"
-                                >
-                                    <div className="role-icon">
-                                        <RoleIcon />
-                                    </div>
-                                    <div>
-                                        <strong>{title}</strong>
-                                        <span>{description}</span>
-                                    </div>
-                                    <div className="role-arrow">→</div>
-                                </button>
-                            ),
-                        )}
-                    </div>
-                    <a
-                        className="btn btn-dark download-link intro-download"
-                        download
-                        href={syllabusUrl}
-                    >
-                        <FileText />
-                        Download MILDA Course Syllabus
-                    </a>
-                    <div className="intro-note">
-                        High-fidelity clickable prototype · Sample data only
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-}
-
 function DashboardView({
     courseProgress,
     quickClaim,
-    quickUrl,
     setQuickClaim,
-    setQuickUrl,
     showView,
     openLesson,
     analyzeQuickClaim,
-    syllabusUrl,
-    toast,
 }: {
     courseProgress: number;
     quickClaim: string;
-    quickUrl: string;
     setQuickClaim: (value: string) => void;
-    setQuickUrl: (value: string) => void;
     showView: (view: View) => void;
     openLesson: (index: number) => void;
     analyzeQuickClaim: () => void;
-    syllabusUrl: string;
-    toast: (message: string) => void;
 }) {
     return (
-        <section className="view active">
-            <div className="hero">
-                <div className="hero-copy">
-                    <span className="eyebrow">
-                        <Sparkles />
-                        MILDA Course Program
-                    </span>
-                    <h3>
-                        Welcome back, Juan.
-                        <br />
-                        Verify before you share.
-                    </h3>
-                    <p>
-                        Continue your course, complete a real-world verification
-                        mission, and build the evidence-based habits required to
-                        become a Verified MILDA Contributor.
-                    </p>
-                    <div className="hero-actions">
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => showView('learn')}
-                            type="button"
-                        >
-                            <BookOpen />
-                            Continue Course
-                        </button>
-                        <a
-                            className="btn btn-ghost download-link"
-                            download
-                            href={syllabusUrl}
-                        >
-                            <FileText />
-                            Download Syllabus
-                        </a>
-                        <button
-                            className="btn btn-ghost"
-                            onClick={() => showView('verify')}
-                            type="button"
-                        >
-                            <Check />
-                            Start Verification
-                        </button>
-                    </div>
-                </div>
-                <div className="hero-progress">
-                    <div className="progress-ring">
-                        <strong>{courseProgress}%</strong>
-                        <span>course complete</span>
-                    </div>
-                    <div>
-                        <h4>Next: AI-Generated Content</h4>
-                        <p>
-                            Learn how AI hallucinations happen and how to verify
-                            AI-assisted outputs.
-                        </p>
-                        <button
-                            className="btn btn-ghost lesson-button"
-                            onClick={() => openLesson(6)}
-                            type="button"
-                        >
-                            Open Module 7
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div className="stats-grid">
-                <StatCard
-                    detail="↑ 42 this week"
-                    icon={Award}
-                    label="Trusted Score"
-                    value="824"
-                />
-                <StatCard
-                    detail="3 awaiting review"
-                    icon={Check}
-                    label="Verification Missions"
-                    value="18"
-                />
-                <StatCard
-                    detail="92% acceptance rate"
-                    icon={Link}
-                    label="Accepted Sources"
-                    value="27"
-                />
-                <StatCard
-                    detail="Quality contributor"
-                    icon={Users}
-                    label="Helpful Reviews"
-                    value="44"
-                />
-            </div>
-            <div className="grid-2">
-                <div className="card">
-                    <div className="card-header">
-                        <div>
-                            <h3>Quick Verification</h3>
-                            <div className="muted small">
-                                Paste a claim or URL to begin a guided check.
-                            </div>
+        <section className="view active student-view student-dashboard">
+            <StudentPageTitle
+                subtitle="Learn. Verify. Share Responsibly."
+                title="Good day, Alex"
+            />
+            <div className="student-page-layout">
+                <div className="student-primary">
+                    <div className="student-card dashboard-verify-card">
+                        <h2>Verify Content</h2>
+                        <div className="student-tabs">
+                            <button className="active" type="button">
+                                <Link /> Paste Link
+                            </button>
+                            <button type="button">
+                                <FileText /> Enter Text
+                            </button>
+                            <button type="button">
+                                <Image /> Upload Image
+                            </button>
                         </div>
-                        <span className="tag tag-purple">AI-assisted</span>
+                        <div className="student-verify-input">
+                            <Link />
+                            <input
+                                aria-label="Content to verify"
+                                onChange={(event) =>
+                                    setQuickClaim(event.target.value)
+                                }
+                                placeholder="Paste a URL or enter a claim to verify"
+                                value={quickClaim}
+                            />
+                            <button
+                                className="student-primary-button"
+                                onClick={analyzeQuickClaim}
+                                type="button"
+                            >
+                                <Sparkles /> Analyze Content
+                            </button>
+                        </div>
                     </div>
-                    <label htmlFor="quickClaim">
-                        Claim, caption, or article excerpt
-                    </label>
-                    <textarea
-                        id="quickClaim"
-                        onChange={(event) => setQuickClaim(event.target.value)}
-                        placeholder="Paste suspicious digital content here..."
-                        value={quickClaim}
-                    />
-                    <button
-                        className="demo-claim"
-                        onClick={() => {
-                            setQuickClaim(demoClaim);
-                            toast('Demonstration claim loaded');
-                        }}
-                        type="button"
-                    >
-                        <Sparkles />
-                        Load a demonstration claim
-                    </button>
-                    <div className="input-row">
-                        <input
-                            onChange={(event) =>
-                                setQuickUrl(event.target.value)
-                            }
-                            placeholder="https://example.com/source"
-                            type="url"
-                            value={quickUrl}
+
+                    <div className="student-stats-grid">
+                        <StudentStatCard
+                            detail="Excellent"
+                            icon={ShieldCheck}
+                            label="Trusted Score"
+                            value="820"
                         />
-                        <button
-                            className="btn btn-dark"
-                            onClick={analyzeQuickClaim}
-                            type="button"
-                        >
-                            <Search />
-                            Analyze
-                        </button>
+                        <StudentStatCard
+                            detail="On track"
+                            icon={GraduationCap}
+                            label="Learning Progress"
+                            value={`${courseProgress}%`}
+                        />
+                        <StudentStatCard
+                            detail="Total submissions"
+                            icon={Users}
+                            label="Contributions"
+                            value="24"
+                        />
+                        <StudentStatCard
+                            detail="In your library"
+                            icon={FileText}
+                            label="Verified Sources"
+                            value="18"
+                        />
                     </div>
-                    <p className="tiny muted">
-                        AI guidance is advisory. Final status requires credible
-                        evidence and moderation.
-                    </p>
+
+                    <div className="dashboard-lower-grid">
+                        <div className="student-card dashboard-learning-card">
+                            <h2>
+                                <BookOpen /> Continue Learning
+                            </h2>
+                            <div className="learning-preview">
+                                <div className="learning-illustration">
+                                    <Search />
+                                    <Check />
+                                </div>
+                                <div>
+                                    <h3>
+                                        Evaluating Online Sources and Claims
+                                    </h3>
+                                    <p>
+                                        Learn how to assess credibility,
+                                        identify bias, and evaluate evidence in
+                                        online content.
+                                    </p>
+                                    <small>Lesson 4 of 6</small>
+                                    <div className="learning-progress-row">
+                                        <StudentProgress value={67} />
+                                        <span>67%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                className="student-primary-button"
+                                onClick={() => openLesson(6)}
+                                type="button"
+                            >
+                                Continue Module <ChevronRight />
+                            </button>
+                            <button
+                                className="student-text-link"
+                                onClick={() => showView('learn')}
+                                type="button"
+                            >
+                                View all modules <ChevronRight />
+                            </button>
+                        </div>
+
+                        <div className="student-card dashboard-reviews-card">
+                            <div className="student-card-heading">
+                                <h2>
+                                    <MessageSquare /> Community Reviews
+                                </h2>
+                                <button
+                                    className="student-text-link"
+                                    onClick={() => showView('community')}
+                                    type="button"
+                                >
+                                    View all
+                                </button>
+                            </div>
+                            {[
+                                [
+                                    'Climate change is a natural cycle',
+                                    'bbc.com · 2h ago',
+                                    'Reliable',
+                                    'green',
+                                    '128',
+                                    '18',
+                                ],
+                                [
+                                    'Drinking lemon water detoxifies your body',
+                                    'wellnessblog.com · 5h ago',
+                                    'Needs Verification',
+                                    'amber',
+                                    '74',
+                                    '23',
+                                ],
+                                [
+                                    'Vaccines cause autism',
+                                    'misleadinginfo.net · 1d ago',
+                                    'Misleading',
+                                    'red',
+                                    '52',
+                                    '31',
+                                ],
+                            ].map(
+                                ([
+                                    claim,
+                                    meta,
+                                    status,
+                                    color,
+                                    likes,
+                                    replies,
+                                ]) => (
+                                    <div className="review-row" key={claim}>
+                                        <span
+                                            className={`status-shield ${color}`}
+                                        >
+                                            {color === 'green'
+                                                ? '✓'
+                                                : color === 'red'
+                                                  ? '×'
+                                                  : '?'}
+                                        </span>
+                                        <div>
+                                            <strong>{claim}</strong>
+                                            <small>{meta}</small>
+                                        </div>
+                                        <span
+                                            className={`student-status ${color}`}
+                                        >
+                                            {status}
+                                        </span>
+                                        <small>
+                                            <ThumbsUp /> {likes}
+                                        </small>
+                                        <small>
+                                            <MessageSquare /> {replies}
+                                        </small>
+                                    </div>
+                                ),
+                            )}
+                            <button
+                                className="student-text-link"
+                                onClick={() => showView('community')}
+                                type="button"
+                            >
+                                See all reviews <ChevronRight />
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div className="card">
-                    <div className="card-header">
-                        <div>
-                            <h3>Recent Community Activity</h3>
-                            <div className="muted small">
-                                Live-style sample records
-                            </div>
-                        </div>
-                        <button
-                            className="btn btn-outline"
-                            onClick={() => showView('community')}
-                            type="button"
-                        >
-                            View hub
-                        </button>
-                    </div>
-                    <div className="feed">
-                        <div className="feed-item">
-                            <div className="feed-meta">
-                                <span className="tag tag-amber">
-                                    Needs Verification
-                                </span>
-                                <span className="tiny muted">12 min ago</span>
-                            </div>
-                            <h4>Claim about a school suspension</h4>
-                            <p>
-                                Official evidence has not yet been attached to
-                                the original post.
-                            </p>
-                        </div>
-                        <div className="feed-item">
-                            <div className="feed-meta">
-                                <span className="tag tag-green">
-                                    Community Verified
-                                </span>
-                                <span className="tiny muted">1 hr ago</span>
-                            </div>
-                            <h4>Updated scholarship application schedule</h4>
-                            <p>
-                                Supported by an official university announcement
-                                and registrar notice.
-                            </p>
-                        </div>
-                        <div className="feed-item">
-                            <div className="feed-meta">
-                                <span className="tag tag-purple">
-                                    Possible AI-Generated
-                                </span>
-                                <span className="tiny muted">3 hrs ago</span>
-                            </div>
-                            <h4>Viral image with inconsistent details</h4>
-                            <p>
-                                AI signal detected; original-source tracing is
-                                recommended.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+
+                <aside className="student-rail">
+                    <MissionCard />
+                    <ContributorList onView={() => showView('leaderboard')} />
+                    <VerifiedContributorCard />
+                </aside>
             </div>
         </section>
     );
 }
 
-function ModulesView({
-    modules,
-    moduleFilter,
-    syllabusUrl,
-    setModuleFilter,
-    openLesson,
-}: {
-    modules: typeof initialCourseModules;
-    moduleFilter: ModuleFilter;
-    syllabusUrl: string;
-    setModuleFilter: (filter: ModuleFilter) => void;
-    openLesson: (index: number) => void;
-}) {
-    const moduleState = (progress: number): Exclude<ModuleFilter, 'all'> => {
-        if (progress === 100) {
-            return 'completed';
-        }
-
-        return progress > 0 ? 'progress' : 'locked';
-    };
+function ModulesView({ openLesson }: { openLesson: (index: number) => void }) {
+    const learningTitles = [
+        'Introduction to Media and Information Literacy',
+        'Misinformation, Disinformation, and Malinformation',
+        'Information Disorder and Online Sharing Behavior',
+        'Evaluating Online Sources and Claims',
+        'Fact-Checking and Verification Techniques',
+        'Community Verification and Reporting',
+        'AI-Generated Content and AI Hallucinations',
+        'Deepfakes and Manipulated Media',
+        'Media Literacy in the Age of Social Media',
+        'Data Privacy and Digital Well-being',
+        'Civic Engagement and Digital Responsibility',
+        'Capstone Project: Verify for Impact',
+    ];
 
     return (
-        <section className="view active">
-            <div className="section-heading">
-                <div>
-                    <h2>MILDA Course Modules</h2>
-                    <p>
-                        Complete the structured course and Digital Verification
-                        Portfolio to earn the contributor badge.
-                    </p>
-                </div>
-                <div className="filter-row">
-                    <a
-                        className="btn btn-dark download-link"
-                        download
-                        href={syllabusUrl}
-                    >
-                        <FileText />
-                        Download Course Syllabus
-                    </a>
-                    {(
-                        [
-                            ['all', 'All'],
-                            ['completed', 'Completed'],
-                            ['progress', 'In progress'],
-                            ['locked', 'Locked'],
-                        ] as [ModuleFilter, string][]
-                    ).map(([filter, label]) => (
-                        <button
-                            className={`filter-chip ${moduleFilter === filter ? 'active' : ''}`}
-                            key={filter}
-                            onClick={() => setModuleFilter(filter)}
-                            type="button"
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </div>
-            </div>
-            <div className="module-grid">
-                {modules.map((module, index) => {
-                    const state = moduleState(module.progress);
+        <section className="view active student-view student-learn">
+            <StudentPageTitle
+                subtitle="Build the skills to verify before you share."
+                title="Learning Center"
+            />
+            <div className="student-page-layout">
+                <div className="student-primary">
+                    <div className="student-stats-grid">
+                        <StudentStatCard
+                            detail="On track"
+                            icon={GraduationCap}
+                            label="Course Progress"
+                            value="65%"
+                        />
+                        <StudentStatCard
+                            detail="Modules"
+                            icon={ClipboardList}
+                            label="Completed Modules"
+                            value="7 of 12"
+                        />
+                        <StudentStatCard
+                            detail="Keep it up!"
+                            icon={Flame}
+                            label="Current Streak"
+                            value="5 days"
+                        />
+                        <StudentStatCard
+                            detail="Badges"
+                            icon={BadgeCheck}
+                            label="Badges Earned"
+                            value="4"
+                        />
+                    </div>
 
-                    if (moduleFilter !== 'all' && state !== moduleFilter) {
-                        return null;
-                    }
-
-                    const label =
-                        state === 'completed'
-                            ? 'Completed'
-                            : state === 'progress'
-                              ? `${module.progress}% complete`
-                              : 'Locked';
-                    const action =
-                        state === 'completed'
-                            ? 'Review'
-                            : state === 'progress'
-                              ? 'Continue'
-                              : 'Preview';
-                    const tagClass =
-                        state === 'completed'
-                            ? 'tag-green'
-                            : state === 'progress'
-                              ? 'tag-blue'
-                              : 'tag-amber';
-
-                    return (
-                        <article
-                            className="card module-card"
-                            key={module.title}
-                        >
-                            <div className="module-number">{index + 1}</div>
-                            <h3>{module.title}</h3>
-                            <p>{module.description}</p>
-                            <div className="linear-progress">
-                                <span
-                                    style={{ width: `${module.progress}%` }}
-                                />
+                    <div className="student-card learning-resume-card">
+                        <span>Continue Learning</span>
+                        <div className="resume-content">
+                            <div className="deepfake-preview">
+                                <Bot />
+                                <CirclePlay />
                             </div>
-                            <div className="module-footer">
-                                <span className={`tag ${tagClass}`}>
-                                    {label}
-                                </span>
+                            <div>
+                                <h2>
+                                    Module 8: Deepfakes and Manipulated Media
+                                </h2>
+                                <p>
+                                    Learn how deepfakes are created, how to
+                                    detect them, and understand the risks and
+                                    real-world impact of manipulated media.
+                                </p>
+                                <div className="resume-progress">
+                                    <StudentProgress value={45} />
+                                    <strong>45%</strong>
+                                </div>
+                            </div>
+                            <button
+                                className="student-primary-button"
+                                onClick={() => openLesson(7)}
+                                type="button"
+                            >
+                                Continue Learning <ChevronRight />
+                            </button>
+                        </div>
+                    </div>
+
+                    <h2 className="student-section-title">
+                        Media and Information Literacy in the Digital Age
+                    </h2>
+                    <div className="learning-module-grid">
+                        {learningTitles.map((title, index) => {
+                            const state =
+                                index < 7
+                                    ? 'completed'
+                                    : index === 7
+                                      ? 'progress'
+                                      : 'locked';
+
+                            return (
                                 <button
-                                    className="btn btn-outline"
+                                    className={`learning-module-card ${state}`}
+                                    disabled={state === 'locked'}
+                                    key={title}
                                     onClick={() => openLesson(index)}
                                     type="button"
                                 >
-                                    {action}
+                                    <span className="module-index">
+                                        {index + 1}
+                                    </span>
+                                    <span>
+                                        <strong>{title}</strong>
+                                        <small>
+                                            {state === 'completed' && (
+                                                <>
+                                                    <CircleCheck /> Completed
+                                                </>
+                                            )}
+                                            {state === 'progress' &&
+                                                'In progress'}
+                                            {state === 'locked' && 'Locked'}
+                                        </small>
+                                    </span>
+                                    {state === 'locked' ? (
+                                        <LockKeyhole />
+                                    ) : state === 'progress' ? (
+                                        <span className="module-spinner" />
+                                    ) : (
+                                        <ChevronRight />
+                                    )}
                                 </button>
-                            </div>
-                        </article>
-                    );
-                })}
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <aside className="student-rail">
+                    <MissionCard title="Weekly Mission" />
+                    <div className="student-side-card recent-badges-card">
+                        <h3>
+                            <BadgeCheck /> Recent Badges
+                        </h3>
+                        {[
+                            [
+                                'Fact-Checker',
+                                'Earned on May 9, 2025',
+                                ShieldCheck,
+                            ],
+                            ['Source Sleuth', 'Earned on Apr 28, 2025', Search],
+                            [
+                                'Community Contributor',
+                                'Earned on Apr 15, 2025',
+                                Users,
+                            ],
+                            ['Streak Starter', 'Earned on Apr 8, 2025', Flame],
+                        ].map(([name, date, Icon]) => {
+                            const BadgeIcon = Icon as LucideIcon;
+
+                            return (
+                                <div
+                                    className="recent-badge-row"
+                                    key={name as string}
+                                >
+                                    <span>
+                                        <BadgeIcon />
+                                    </span>
+                                    <div>
+                                        <strong>{name as string}</strong>
+                                        <small>{date as string}</small>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                        <button className="student-text-link" type="button">
+                            View all badges <ChevronRight />
+                        </button>
+                    </div>
+                    <div className="student-side-card certificate-card">
+                        <h3>
+                            <FileText /> Course Certificate
+                        </h3>
+                        <p>
+                            Complete all 12 modules to earn your MILDA
+                            Certificate.
+                        </p>
+                        <strong>65%</strong>
+                        <span>7 of 12 modules completed</span>
+                        <StudentProgress value={65} />
+                        <button
+                            className="student-outline-button"
+                            type="button"
+                        >
+                            View Certificate Progress <ChevronRight />
+                        </button>
+                    </div>
+                </aside>
             </div>
         </section>
     );
@@ -620,350 +650,766 @@ function VerificationView({
     tab,
     verifyClaim,
     verifyUrl,
-    urlContext,
     result,
-    resultVisible,
     setTab,
     setVerifyClaim,
     setVerifyUrl,
-    setUrlContext,
     runAnalysis,
-    clearAnalysis,
     submitForReview,
 }: {
     tab: VerifyTab;
     verifyClaim: string;
     verifyUrl: string;
-    urlContext: string;
     result: AnalysisScenario;
-    resultVisible: boolean;
     setTab: (tab: VerifyTab) => void;
     setVerifyClaim: (value: string) => void;
     setVerifyUrl: (value: string) => void;
-    setUrlContext: (value: string) => void;
     runAnalysis: () => void;
-    clearAnalysis: () => void;
     submitForReview: () => void;
 }) {
-    const workflow = [
-        [
-            'Check existing records',
-            'Search for prior reviews, reports, and trusted sources.',
-        ],
-        [
-            'AI-assisted guidance',
-            'Extract claims and identify verification questions or manipulation signals.',
-        ],
-        [
-            'Evaluate evidence',
-            'Compare primary sources, official records, and independent references.',
-        ],
-        [
-            'Community review',
-            'Contributors may report, vote, add sources, or dispute results.',
-        ],
-        [
-            'Moderated status',
-            'Community voting alone never establishes factual accuracy.',
-        ],
-    ];
+    const claim =
+        verifyClaim || 'Drinking lemon water removes all toxins from the body.';
 
     return (
-        <section className="view active">
-            <div className="section-heading">
-                <div>
-                    <h2>Verify Digital Content</h2>
-                    <p>
-                        Use AI-assisted guidance, source evaluation, and
-                        moderated community review.
-                    </p>
-                </div>
-                <span className="tag tag-blue">Guided workflow</span>
-            </div>
-            <div className="verify-layout">
-                <div className="card">
-                    <div className="tab-row">
-                        {(
-                            [
-                                ['text', 'Text / Claim'],
-                                ['url', 'URL'],
-                                ['image', 'Image'],
-                            ] as [VerifyTab, string][]
-                        ).map(([tabName, label]) => (
+        <section className="view active student-view student-verify">
+            <StudentPageTitle
+                subtitle="Analyze a claim, link, screenshot, or image."
+                title="Verify Content"
+            />
+
+            <div className="student-page-layout verify-page-layout">
+                <div className="student-primary">
+                    <div className="student-card verify-entry-card">
+                        <div className="student-tabs">
+                            {(
+                                [
+                                    ['url', 'Paste Link', Link],
+                                    ['text', 'Enter Text', FileText],
+                                    ['image', 'Upload Image', Image],
+                                ] as [VerifyTab, string, LucideIcon][]
+                            ).map(([tabName, label, Icon]) => (
+                                <button
+                                    className={tab === tabName ? 'active' : ''}
+                                    key={tabName}
+                                    onClick={() => setTab(tabName)}
+                                    type="button"
+                                >
+                                    <Icon /> {label}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="student-verify-input">
+                            {tab === 'image' ? (
+                                <>
+                                    <Upload />
+                                    <input
+                                        aria-label="Upload image"
+                                        accept="image/*"
+                                        type="file"
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    {tab === 'url' ? <Link /> : <FileText />}
+                                    <input
+                                        aria-label="Content to verify"
+                                        onChange={(event) =>
+                                            tab === 'url'
+                                                ? setVerifyUrl(
+                                                      event.target.value,
+                                                  )
+                                                : setVerifyClaim(
+                                                      event.target.value,
+                                                  )
+                                        }
+                                        placeholder={
+                                            tab === 'url'
+                                                ? 'Paste a URL or enter a claim to verify'
+                                                : 'Enter a claim or caption to verify'
+                                        }
+                                        type={tab === 'url' ? 'url' : 'text'}
+                                        value={
+                                            tab === 'url'
+                                                ? verifyUrl
+                                                : verifyClaim
+                                        }
+                                    />
+                                </>
+                            )}
                             <button
-                                className={`tab ${tab === tabName ? 'active' : ''}`}
-                                key={tabName}
-                                onClick={() => setTab(tabName)}
+                                className="student-primary-button"
+                                onClick={runAnalysis}
                                 type="button"
                             >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-                    {tab === 'text' && (
-                        <div className="verify-tab">
-                            <label htmlFor="verifyClaim">
-                                Claim or caption
-                            </label>
-                            <textarea
-                                id="verifyClaim"
-                                onChange={(event) =>
-                                    setVerifyClaim(event.target.value)
-                                }
-                                placeholder="Paste the claim, caption, or text you want to examine..."
-                                value={verifyClaim}
-                            />
-                            <button
-                                className="demo-claim"
-                                onClick={() => setVerifyClaim(demoClaim)}
-                                type="button"
-                            >
-                                <Sparkles />
-                                Use demo: school suspension claim
+                                <Sparkles /> Analyze Content
                             </button>
                         </div>
-                    )}
-                    {tab === 'url' && (
-                        <div className="verify-tab">
-                            <label htmlFor="verifyUrl">
-                                Article or post URL
-                            </label>
-                            <input
-                                id="verifyUrl"
-                                onChange={(event) =>
-                                    setVerifyUrl(event.target.value)
-                                }
-                                placeholder="https://..."
-                                type="url"
-                                value={verifyUrl}
-                            />
-                            <div className="field-spacer" />
-                            <label htmlFor="urlContext">Optional context</label>
-                            <textarea
-                                id="urlContext"
-                                onChange={(event) =>
-                                    setUrlContext(event.target.value)
-                                }
-                                placeholder="What part of the page should be checked?"
-                                value={urlContext}
-                            />
-                        </div>
-                    )}
-                    {tab === 'image' && (
-                        <div className="verify-tab">
-                            <div className="upload-zone">
-                                <Upload />
-                                <h3>Upload a screenshot or image</h3>
-                                <div className="small muted">
-                                    PNG, JPG, or WEBP · Prototype preview only
-                                </div>
-                                <input accept="image/*" type="file" />
-                            </div>
-                        </div>
-                    )}
-                    <div className="form-actions">
-                        <button
-                            className="btn btn-dark"
-                            onClick={runAnalysis}
-                            type="button"
-                        >
-                            <Search />
-                            Run Guided Analysis
-                        </button>
-                        <button
-                            className="btn btn-outline"
-                            onClick={clearAnalysis}
-                            type="button"
-                        >
-                            Clear
-                        </button>
                     </div>
-                </div>
-                <div className="card">
-                    <h3>Five-step verification process</h3>
-                    <div className="workflow">
-                        {workflow.map(([title, description], index) => (
-                            <div className="workflow-step" key={title}>
-                                <div className="step-n">{index + 1}</div>
+
+                    <div className="verification-results-grid">
+                        <div className="student-card claim-review-card">
+                            <h2>Claim Under Review</h2>
+                            <h3>{claim}</h3>
+                            <dl>
                                 <div>
-                                    <strong>{title}</strong>
-                                    <p>{description}</p>
+                                    <dt>Type:</dt>
+                                    <dd>Text Claim</dd>
+                                </div>
+                                <div>
+                                    <dt>Submitted:</dt>
+                                    <dd>May 20, 2025 · 10:32 AM</dd>
+                                </div>
+                                <div>
+                                    <dt>Submitted by:</dt>
+                                    <dd>Alex Rivera</dd>
+                                </div>
+                                <div>
+                                    <dt>Source:</dt>
+                                    <dd>
+                                        wellnessblog.com <ExternalLink />
+                                    </dd>
+                                </div>
+                            </dl>
+                            <div className="claim-score-box">
+                                <span className="status-shield amber">?</span>
+                                <div>
+                                    <strong>{result.tag}</strong>
+                                    <small>
+                                        This claim requires additional credible
+                                        evidence.
+                                    </small>
+                                </div>
+                                <div>
+                                    <strong>{result.aiScore}</strong>
+                                    <small>Confidence</small>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-            {resultVisible && (
-                <div className="result-panel">
-                    <div className="result-head">
-                        <div>
-                            <span className={`tag ${result.tagClass}`}>
-                                {result.tag}
-                            </span>
-                            <h2>{result.title}</h2>
-                            <div className="small muted">{result.summary}</div>
                         </div>
+
+                        <div className="analysis-stack">
+                            <div className="student-card analysis-card">
+                                <span className="analysis-icon">
+                                    <Bot />
+                                </span>
+                                <div>
+                                    <h2>AI-Assisted Analysis</h2>
+                                    <small>
+                                        Our AI reviewed the claim and related
+                                        sources to evaluate its accuracy.
+                                    </small>
+                                    <p>
+                                        The claim is{' '}
+                                        <strong>
+                                            partially supported but exaggerated.
+                                        </strong>{' '}
+                                        Lemon water may support hydration and
+                                        provide vitamin C, but there is{' '}
+                                        <strong>no scientific evidence</strong>{' '}
+                                        it removes “all toxins” from the body.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="student-card analysis-card">
+                                <span className="analysis-icon">
+                                    <Check />
+                                </span>
+                                <div>
+                                    <h2>Key Findings</h2>
+                                    <ul>
+                                        <li>
+                                            No scientific evidence supports that
+                                            lemon water removes all toxins.
+                                        </li>
+                                        <li>
+                                            Detoxification is naturally carried
+                                            out by the liver, kidneys, and
+                                            lungs.
+                                        </li>
+                                        <li>
+                                            Lemon water may aid hydration and
+                                            provide vitamin C and antioxidants.
+                                        </li>
+                                        <li>
+                                            “Toxins” is a vague term with no
+                                            standard medical definition.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="student-card analysis-card">
+                                <span className="analysis-icon">
+                                    <ClipboardList />
+                                </span>
+                                <div>
+                                    <h2>Context and Missing Evidence</h2>
+                                    <p>
+                                        Studies show lemon water can be a
+                                        healthy addition to a balanced diet.
+                                        However, claims about “detox” effects
+                                        lack clinical backing. More high-quality
+                                        research is needed.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="ai-advisory">
+                        <ShieldCheck /> AI guidance is advisory. Always verify
+                        with trusted sources.
+                    </div>
+                    <div className="verification-actions">
                         <button
-                            className="btn btn-outline"
+                            className="student-outline-button"
                             onClick={submitForReview}
                             type="button"
                         >
-                            Submit for Community Review
+                            <Plus /> Add Trusted Source
+                        </button>
+                        <button
+                            className="student-outline-button"
+                            onClick={submitForReview}
+                            type="button"
+                        >
+                            <Flag /> Report Content
+                        </button>
+                        <button
+                            className="student-outline-button"
+                            type="button"
+                        >
+                            <Bookmark /> Save to Portfolio
                         </button>
                     </div>
-                    <div className="result-body">
-                        <div>
-                            <h3>Advisory assessment</h3>
-                            <div className="score-box">
+                </div>
+
+                <aside className="student-rail">
+                    <div className="student-side-card trusted-sources-card">
+                        <h3>
+                            <ShieldCheck /> Trusted Sources to Check
+                        </h3>
+                        {[
+                            [
+                                'World Health Organization',
+                                'Detox diets and body cleansing',
+                                'who.int/news-room/fact-sheets',
+                            ],
+                            [
+                                'Mayo Clinic',
+                                'Detox diets: Are they safe?',
+                                'mayoclinic.org/healthy-lifestyle/nutrition',
+                            ],
+                            [
+                                'Cochrane Library',
+                                'Detoxification diets for toxin elimination',
+                                'cochranelibrary.com/cdsr/doi/10.1002',
+                            ],
+                        ].map(([name, detail, url]) => (
+                            <div className="trusted-source-row" key={name}>
+                                <span>{name.slice(0, 2).toUpperCase()}</span>
                                 <div>
-                                    <span className="tiny muted">
-                                        AI confidence
-                                    </span>
-                                    <strong>{result.aiScore}</strong>
-                                </div>
-                                <div>
-                                    <span className="tiny muted">
-                                        Records found
-                                    </span>
-                                    <strong>{result.recordCount}</strong>
-                                </div>
-                                <div>
-                                    <span className="tiny muted">
-                                        Sources found
-                                    </span>
-                                    <strong>{result.sourceCount}</strong>
+                                    <strong>{name}</strong>
+                                    <small>{detail}</small>
+                                    <a href={`https://${url}`}>
+                                        {url} <ExternalLink />
+                                    </a>
                                 </div>
                             </div>
-                            <p className="small muted">{result.guidance}</p>
-                            <div className="notice">
-                                <strong>Important:</strong> This AI-assisted
-                                output is advisory and not a final
-                                determination.
+                        ))}
+                        <button className="student-text-link" type="button">
+                            View more trusted sources <ChevronRight />
+                        </button>
+                    </div>
+
+                    <div className="student-side-card assessment-card">
+                        <h3>
+                            <Users /> Community Assessment
+                        </h3>
+                        <p>What do other verified members think?</p>
+                        <div className="assessment-options">
+                            <div className="green">
+                                <span>✓</span>
+                                <strong>Reliable</strong>
+                                <small>82 (38%)</small>
+                            </div>
+                            <div className="amber">
+                                <span>?</span>
+                                <strong>Needs Verification</strong>
+                                <small>96 (45%)</small>
+                            </div>
+                            <div className="red">
+                                <span>×</span>
+                                <strong>Misleading</strong>
+                                <small>34 (17%)</small>
                             </div>
                         </div>
-                        <div>
-                            <h3>Recommended checks</h3>
-                            <div className="checklist">
-                                <ChecklistItem
-                                    detail="Find who first issued the claim."
-                                    title="Identify the original publisher"
-                                />
-                                <ChecklistItem
-                                    detail="Old or unrelated information can mislead."
-                                    title="Check date and context"
-                                />
-                                <ChecklistItem
-                                    detail="Prefer primary and independent evidence."
-                                    title="Compare official sources"
-                                />
-                            </div>
+                        <div className="assessment-footer">
+                            <span>Total votes: 212</span>
+                            <button className="student-text-link" type="button">
+                                View discussion <ChevronRight />
+                            </button>
                         </div>
                     </div>
-                </div>
-            )}
+
+                    <div className="student-side-card stop-card">
+                        <ShieldCheck />
+                        <div>
+                            <h3>S.T.O.P. Before You Share</h3>
+                            <strong>Stop · Think · Observe · Proceed</strong>
+                            <p>Pause to evaluate before sharing information.</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
         </section>
     );
 }
 
 function CommunityView({
-    items,
     filter,
     setFilter,
     vote,
     toast,
+    showView,
 }: {
-    items: CommunityItem[];
     filter: CommunityFilter;
     setFilter: (filter: CommunityFilter) => void;
     vote: (itemIndex: number, voteIndex: number) => void;
     toast: (message: string) => void;
+    showView: (view: View) => void;
 }) {
-    return (
-        <section className="view active">
-            <div className="section-heading">
-                <div>
-                    <h2>Community Verification Hub</h2>
-                    <p>
-                        Participate through evidence, responsible feedback, and
-                        moderated review.
-                    </p>
-                </div>
-                <div className="filter-row">
-                    {(
-                        [
-                            ['all', 'All'],
-                            ['verified', 'Verified'],
-                            ['review', 'Needs Review'],
-                            ['media', 'Manipulated Media'],
-                        ] as [CommunityFilter, string][]
-                    ).map(([status, label]) => (
-                        <button
-                            className={`filter-chip ${filter === status ? 'active' : ''}`}
-                            key={status}
-                            onClick={() => setFilter(status)}
-                            type="button"
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </div>
-            </div>
-            <div className="grid-3">
-                {items.map((item, index) => {
-                    if (filter !== 'all' && item.status !== filter) {
-                        return null;
-                    }
+    const communityRows = [
+        {
+            title: 'A viral image shows a city flooded yesterday',
+            text: 'A photo circulating on social media claims a major city was flooded due to heavy rain yesterday.',
+            meta: 'Posted 2 hours ago · Image',
+            state: 'review' as const,
+            tag: 'Needs Verification',
+            evidence: '3',
+            votes: '12',
+            user: 'Jasmine M.',
+        },
+        {
+            title: 'The university announced classes are suspended tomorrow',
+            text: 'An official notice from the university states that all classes are suspended tomorrow due to severe weather.',
+            meta: 'Posted 5 hours ago · Text',
+            state: 'verified' as const,
+            tag: 'Reliable',
+            evidence: '5',
+            votes: '28',
+            user: 'Alex Rivera',
+        },
+        {
+            title: 'A celebrity endorsed this investment platform',
+            text: 'A post claims a well-known celebrity is endorsing an investment platform that promises guaranteed returns.',
+            meta: 'Posted 8 hours ago · Image',
+            state: 'media' as const,
+            tag: 'Misleading',
+            evidence: '4',
+            votes: '18',
+            user: 'Sofia C.',
+        },
+    ];
 
-                    return (
-                        <article
-                            className="card community-card"
-                            key={item.title}
-                        >
-                            <div className="card-header">
-                                <span className={`tag ${item.tagClass}`}>
-                                    {item.tag}
-                                </span>
-                                <span className="tiny muted">
-                                    {item.reports}
-                                </span>
+    return (
+        <section className="view active student-view student-community">
+            <StudentPageTitle
+                subtitle="Review evidence. Share trusted sources. Help the community decide."
+                title="Community Verification"
+            />
+            <div className="student-page-layout">
+                <div className="student-primary">
+                    <div className="student-card community-toolbar-card">
+                        <div className="community-toolbar">
+                            <label>
+                                <Search />
+                                <input
+                                    aria-label="Search community reports"
+                                    placeholder="Search community reports"
+                                />
+                            </label>
+                            <div className="student-tabs community-tabs">
+                                {(
+                                    [
+                                        ['all', 'All Content'],
+                                        ['review', 'Needs Review'],
+                                        ['verified', 'Verified'],
+                                        ['media', 'Disputed'],
+                                    ] as [CommunityFilter, string][]
+                                ).map(([value, label]) => (
+                                    <button
+                                        className={
+                                            filter === value ? 'active' : ''
+                                        }
+                                        key={value}
+                                        onClick={() => setFilter(value)}
+                                        type="button"
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
                             </div>
-                            <h3>{item.title}</h3>
-                            <p>{item.text}</p>
-                            <div className="evidence-note">{item.note}</div>
-                            <div className="vote-row">
-                                {['Reliable', 'Needs Review', 'Misleading'].map(
-                                    (label, voteIndex) => (
+                            <select aria-label="Sort reports">
+                                <option>Newest</option>
+                                <option>Most reviewed</option>
+                            </select>
+                        </div>
+                        <div className="community-stat-grid">
+                            <StudentStatCard
+                                detail="Items need community review"
+                                icon={HelpCircle}
+                                label="Open Reviews"
+                                value="128"
+                            />
+                            <StudentStatCard
+                                detail="Reports confirmed by community"
+                                icon={ShieldCheck}
+                                label="Verified This Week"
+                                value="64"
+                            />
+                            <StudentStatCard
+                                detail="New reliable sources contributed"
+                                icon={FileText}
+                                label="Trusted Sources Added"
+                                value="217"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="community-report-list">
+                        {communityRows.map((row, index) => {
+                            if (filter !== 'all' && row.state !== filter) {
+                                return null;
+                            }
+
+                            const color =
+                                row.state === 'verified'
+                                    ? 'green'
+                                    : row.state === 'media'
+                                      ? 'red'
+                                      : 'amber';
+
+                            return (
+                                <article
+                                    className="student-card community-report-row"
+                                    key={row.title}
+                                >
+                                    <span
+                                        className={`status-shield large ${color}`}
+                                    >
+                                        {color === 'green'
+                                            ? '✓'
+                                            : color === 'red'
+                                              ? '×'
+                                              : '?'}
+                                    </span>
+                                    <div className="community-claim">
+                                        <small>Claim</small>
+                                        <h2>{row.title}</h2>
+                                        <p>{row.text}</p>
+                                        <span>{row.meta}</span>
+                                    </div>
+                                    <div className="community-evidence">
+                                        <span
+                                            className={`student-status ${color}`}
+                                        >
+                                            {row.tag}
+                                        </span>
+                                        <div>
+                                            <span>
+                                                <FileText /> Evidence
+                                                <strong>{row.evidence}</strong>
+                                            </span>
+                                            <span>
+                                                <Users /> Community Votes
+                                                <strong>{row.votes}</strong>
+                                            </span>
+                                            <span>
+                                                <span className="mini-avatar">
+                                                    {row.user
+                                                        .split(' ')
+                                                        .map((part) => part[0])
+                                                        .join('')}
+                                                </span>
+                                                Contributed by
+                                                <strong>{row.user}</strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="community-actions">
                                         <button
-                                            className="vote-btn"
-                                            key={label}
+                                            className="student-primary-button"
+                                            onClick={() => vote(index, 0)}
+                                            type="button"
+                                        >
+                                            Review Evidence <ChevronRight />
+                                        </button>
+                                        <button
+                                            className="student-outline-button"
                                             onClick={() =>
-                                                vote(index, voteIndex)
+                                                toast(
+                                                    'Trusted-source form opened',
+                                                )
                                             }
                                             type="button"
                                         >
-                                            {label}{' '}
-                                            <strong>
-                                                {item.votes[voteIndex]}
-                                            </strong>
+                                            Add Source <Plus />
                                         </button>
-                                    ),
-                                )}
-                                <button
-                                    className="vote-btn"
-                                    onClick={() =>
-                                        toast(
-                                            'Trusted-source form opened in the full system',
-                                        )
-                                    }
-                                    type="button"
-                                >
-                                    Add Source
+                                    </div>
+                                </article>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <aside className="student-rail">
+                    <div className="student-side-card guidelines-card">
+                        <h3>
+                            <ShieldCheck /> Community Guidelines
+                        </h3>
+                        {[
+                            'Be respectful and objective',
+                            'Verify before you vote',
+                            'Cite credible sources',
+                            'No personal information',
+                            'Report abuse or spam',
+                        ].map((guideline) => (
+                            <p key={guideline}>
+                                <CircleCheck /> {guideline}
+                            </p>
+                        ))}
+                        <button className="student-text-link" type="button">
+                            View full guidelines <ChevronRight />
+                        </button>
+                    </div>
+                    <ContributorList
+                        onView={() => showView('leaderboard')}
+                        title="Top Reviewers This Week"
+                    />
+                    <div className="student-side-card impact-card">
+                        <span>
+                            <Users />
+                        </span>
+                        <div>
+                            <h3>Your Review Impact</h3>
+                            <strong>36</strong>
+                            <small>people helped</small>
+                        </div>
+                        <p>
+                            Keep it up! Your reviews make the community
+                            stronger.
+                        </p>
+                        <button className="student-text-link" type="button">
+                            View your activity <ChevronRight />
+                        </button>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    );
+}
+
+function ContributionsView({ toast }: { toast: (message: string) => void }) {
+    const activity = [3, 5, 4, 7, 3, 1, 1];
+    const history = [
+        [
+            'Lemon water detox claim',
+            'Added trusted source',
+            'Accepted',
+            '+40',
+            'Aug 2',
+        ],
+        [
+            'Viral flood image',
+            'Submitted report',
+            'Under Review',
+            '+10',
+            'Aug 1',
+        ],
+        [
+            'Suspension announcement',
+            'Community review',
+            'Verified',
+            '+25',
+            'Jul 30',
+        ],
+        [
+            'Investment endorsement',
+            'Voted Misleading',
+            'Confirmed',
+            '+20',
+            'Jul 28',
+        ],
+    ];
+
+    return (
+        <section className="view active student-view student-contributions">
+            <StudentPageTitle
+                subtitle="Track your verification work and build your Digital Verification Portfolio."
+                title="My Contributions"
+            />
+            <div className="student-page-layout">
+                <div className="student-primary">
+                    <div className="student-stats-grid">
+                        <StudentStatCard
+                            detail="All time"
+                            icon={ClipboardList}
+                            label="Total Contributions"
+                            value="24"
+                        />
+                        <StudentStatCard
+                            detail="Added to MILDA"
+                            icon={ShieldCheck}
+                            label="Trusted Sources"
+                            value="18"
+                        />
+                        <StudentStatCard
+                            detail="From community"
+                            icon={ThumbsUp}
+                            label="Helpful Votes"
+                            value="142"
+                        />
+                        <StudentStatCard
+                            detail="Excellent"
+                            icon={Award}
+                            label="Impact Score"
+                            value="820"
+                        />
+                    </div>
+
+                    <div className="student-card contribution-chart-card">
+                        <div className="student-card-heading">
+                            <h2>Contribution Activity</h2>
+                            <select aria-label="Contribution period">
+                                <option>This Week</option>
+                                <option>This Month</option>
+                            </select>
+                        </div>
+                        <div className="activity-chart">
+                            {activity.map((value, index) => (
+                                <div className="activity-column" key={index}>
+                                    <strong>{value}</strong>
+                                    <span
+                                        style={{ height: `${value * 15}px` }}
+                                    />
+                                    <small>
+                                        {
+                                            [
+                                                'Mon',
+                                                'Tue',
+                                                'Wed',
+                                                'Thu',
+                                                'Fri',
+                                                'Sat',
+                                                'Sun',
+                                            ][index]
+                                        }
+                                    </small>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="student-card contribution-history-card">
+                        <div className="student-card-heading">
+                            <h2>Contribution History</h2>
+                            <div className="history-filters">
+                                <button className="active" type="button">
+                                    All
                                 </button>
+                                <button type="button">Accepted</button>
+                                <button type="button">Under Review</button>
+                                <button type="button">Confirmed</button>
                             </div>
-                        </article>
-                    );
-                })}
+                        </div>
+                        <div className="student-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Content</th>
+                                        <th>Contribution</th>
+                                        <th>Status</th>
+                                        <th>Points</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {history.map((row, index) => (
+                                        <tr key={row[0]}>
+                                            <td>
+                                                {index === 1 ? (
+                                                    <Image />
+                                                ) : (
+                                                    <Link />
+                                                )}
+                                                <strong>{row[0]}</strong>
+                                            </td>
+                                            <td>{row[1]}</td>
+                                            <td>
+                                                <span
+                                                    className={`student-status ${
+                                                        row[2] ===
+                                                        'Under Review'
+                                                            ? 'amber'
+                                                            : row[2] ===
+                                                                'Verified'
+                                                              ? 'blue'
+                                                              : 'green'
+                                                    }`}
+                                                >
+                                                    {row[2]}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <strong className="points">
+                                                    {row[3]}
+                                                </strong>
+                                            </td>
+                                            <td>{row[4]}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <aside className="student-rail">
+                    <div className="student-side-card portfolio-progress-card">
+                        <h3>Portfolio Progress</h3>
+                        <div>
+                            <span className="portfolio-ring">70%</span>
+                            <p>
+                                You’re building a strong verification portfolio.
+                                Keep it up!
+                            </p>
+                        </div>
+                    </div>
+                    <div className="student-side-card contributor-badge-detail">
+                        <VerifiedContributorCard />
+                        {[
+                            'Trusted by the community',
+                            'Improving information quality',
+                            'Building a better internet',
+                        ].map((item) => (
+                            <p key={item}>
+                                <CircleCheck /> {item}
+                            </p>
+                        ))}
+                    </div>
+                    <div className="student-side-card export-card">
+                        <button
+                            className="student-primary-button"
+                            onClick={() => toast('Portfolio export prepared')}
+                            type="button"
+                        >
+                            <Download /> Export Portfolio
+                        </button>
+                        <p>
+                            Download your verification portfolio as a PDF
+                            report.
+                        </p>
+                    </div>
+                </aside>
             </div>
         </section>
     );
@@ -971,338 +1417,249 @@ function CommunityView({
 
 function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
     const rows = [
-        ['1', 'Alex D.', 'Verified Contributor', '96%', '1,420'],
-        ['2', 'Jamie C.', 'Verified Contributor', '94%', '1,315'],
-        ['3', 'Yvonne I.', 'Verified Contributor', '91%', '1,207'],
-        ['4', 'Luigi B.', 'Course Participant', '88%', '1,080'],
-        ['5', 'Angela M.', 'Course Participant', '85%', '972'],
+        [
+            '4',
+            'ET',
+            'Ethan Thompson',
+            'University of Toronto',
+            '23',
+            '41',
+            '760',
+        ],
+        [
+            '5',
+            'AL',
+            'Aisha Lee',
+            'National University of Singapore',
+            '21',
+            '38',
+            '715',
+        ],
+        [
+            '6',
+            'JR',
+            'Joshua Rivera',
+            'University of Cape Town',
+            '20',
+            '33',
+            '670',
+        ],
+        ['7', 'NW', 'Nina Wu', 'University of Melbourne', '18', '31', '620'],
+        [
+            '8',
+            'DP',
+            'Daniel Patel',
+            'Indian Institute of Science',
+            '17',
+            '29',
+            '585',
+        ],
+        ['9', 'SK', 'Sara Kim', 'Seoul National University', '16', '27', '545'],
+        [
+            '10',
+            'TG',
+            'Tomás García',
+            'Universidad de los Andes',
+            '14',
+            '24',
+            '510',
+        ],
     ];
 
     return (
-        <section className="view active">
-            <div className="grid-2">
-                <div className="card">
-                    <div className="card-header">
-                        <div>
-                            <h2>Quality-based Leaderboard</h2>
-                            <div className="small muted">
-                                Scores reward accepted evidence, helpful
-                                reviews, and responsible participation—not
-                                report volume alone.
-                            </div>
+        <section className="view active student-view student-leaderboard">
+            <StudentPageTitle
+                subtitle="Recognizing responsible and evidence-based participation."
+                title="Leaderboard"
+            />
+            <div className="student-page-layout">
+                <div className="student-primary">
+                    <div className="leaderboard-controls">
+                        <div className="student-tabs">
+                            <button className="active" type="button">
+                                This Week
+                            </button>
+                            <button type="button">This Month</button>
+                            <button type="button">All Time</button>
                         </div>
-                        <select
-                            aria-label="Leaderboard period"
-                            className="role-select leaderboard-period"
-                        >
-                            <option>This Semester</option>
-                            <option>This Month</option>
+                        <select aria-label="Institution filter">
+                            <option>All Institutions</option>
+                            <option>University of Toronto</option>
                         </select>
                     </div>
-                    <div className="leaderboard-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Rank</th>
-                                    <th>Contributor</th>
-                                    <th>Recognition</th>
-                                    <th>Evidence Quality</th>
-                                    <th>Trusted Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {rows.map((row) => (
-                                    <tr key={row[1]}>
-                                        <td>{row[0]}</td>
-                                        <td>{row[1]}</td>
-                                        <td>
-                                            <span
-                                                className={`tag ${row[2] === 'Verified Contributor' ? 'tag-green' : 'tag-blue'}`}
-                                            >
-                                                {row[2]}
-                                            </span>
-                                        </td>
-                                        <td>{row[3]}</td>
-                                        <td>{row[4]}</td>
+
+                    <div className="podium-grid">
+                        {[
+                            ['2', 'LO', 'Liam Okafor', '980'],
+                            ['1', 'MC', 'Maya Chen', '1,250'],
+                            ['3', 'SM', 'Sofia Martinez', '870'],
+                        ].map(([rank, initials, name, score]) => (
+                            <div
+                                className={`student-card podium-card rank-${rank}`}
+                                key={name}
+                            >
+                                <span className="rank">{rank}</span>
+                                <span className="podium-avatar">
+                                    {initials}
+                                </span>
+                                <div>
+                                    <strong>{name}</strong>
+                                    <span>{score}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="student-card leaderboard-table-card">
+                        <div className="student-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Contributor</th>
+                                        <th>Institution</th>
+                                        <th>Trusted Sources</th>
+                                        <th>Reviews</th>
+                                        <th>Score</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {rows.map((row) => (
+                                        <tr key={row[0]}>
+                                            <td>{row[0]}</td>
+                                            <td>
+                                                <span className="mini-avatar">
+                                                    {row[1]}
+                                                </span>
+                                                <strong>{row[2]}</strong>
+                                            </td>
+                                            <td>{row[3]}</td>
+                                            <td>{row[4]}</td>
+                                            <td>{row[5]}</td>
+                                            <td>{row[6]}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div className="your-rank-card">
+                        <div>
+                            <span>Your Rank</span>
+                            <strong>#12</strong>
+                        </div>
+                        <span className="podium-avatar">AR</span>
+                        <div>
+                            <strong>Alex Rivera</strong>
+                            <small>University of California, Berkeley</small>
+                        </div>
+                        <div>
+                            <small>Trusted Sources</small>
+                            <strong>18</strong>
+                        </div>
+                        <div>
+                            <small>Reviews</small>
+                            <strong>18</strong>
+                        </div>
+                        <div>
+                            <small>Score</small>
+                            <strong>820</strong>
+                        </div>
+                        <p>
+                            50 points
+                            <br />
+                            to reach Top 10
+                        </p>
                     </div>
                 </div>
-                <div className="card badge-panel">
-                    <div>
-                        <div className="badge-seal">
-                            <Award />
-                        </div>
-                        <h2>Verified MILDA Contributor</h2>
-                        <p className="muted small">
-                            A course-completion badge showing that the user
-                            finished MILDA training and the final Digital
-                            Verification Portfolio.
+
+                <aside className="student-rail">
+                    <div className="student-side-card points-card">
+                        <h3>
+                            How Points Work
+                            <button
+                                aria-label="View badge and points policy"
+                                onClick={openPolicy}
+                                type="button"
+                            >
+                                <Info />
+                            </button>
+                        </h3>
+                        <p>
+                            <ShieldCheck /> Trusted source <strong>+40</strong>
                         </p>
-                        <div className="requirement-list">
-                            <div className="requirement done">
-                                ✓ Complete Modules 1–6
-                            </div>
-                            <div className="requirement">
-                                ○ Complete Modules 7–11
-                            </div>
-                            <div className="requirement">
-                                ○ Submit Digital Verification Portfolio
-                            </div>
-                            <div className="requirement">
-                                ○ Pass instructor review
-                            </div>
+                        <p>
+                            <MessageSquare /> Helpful review{' '}
+                            <strong>+25</strong>
+                        </p>
+                        <p>
+                            <CircleCheck /> Verified report <strong>+20</strong>
+                        </p>
+                        <small>
+                            Keep contributing to help build a safer information
+                            environment.
+                        </small>
+                    </div>
+                    <div className="student-side-card institution-card">
+                        <span>
+                            <Building2 />
+                        </span>
+                        <div>
+                            <h3>Top Institution</h3>
+                            <strong>University of Toronto</strong>
+                            <p>
+                                12,450 points
+                                <br />
+                                89 active contributors
+                            </p>
                         </div>
-                        <button
-                            className="btn btn-outline policy-button"
-                            onClick={openPolicy}
-                            type="button"
-                        >
-                            View Badge Policy
+                        <button className="student-text-link" type="button">
+                            View institution leaderboard <ChevronRight />
                         </button>
                     </div>
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function InstructorView({ toast }: { toast: (message: string) => void }) {
-    const queue = [
-        ['Student 2026-0182', '12 modules completed · Portfolio submitted'],
-        ['Student 2026-0214', '11 modules completed · 1 mission pending'],
-        ['Student 2026-0251', 'Portfolio resubmitted after feedback'],
-    ];
-    const sections = [
-        ['BSIT Section A', 82],
-        ['BSCS Section A', 74],
-        ['Senior High Pilot', 63],
-        ['Cross-program Elective', 58],
-    ] as const;
-
-    return (
-        <section className="view active">
-            <div className="stats-grid">
-                <StatCard
-                    detail="Across 4 sections"
-                    icon={Users}
-                    label="Enrolled Students"
-                    value="126"
-                />
-                <StatCard
-                    detail="↑ 9% this month"
-                    icon={BarChart3}
-                    label="Course Completion"
-                    value="68%"
-                />
-                <StatCard
-                    detail="12 pending"
-                    icon={FileText}
-                    label="Portfolio Reviews"
-                    value="31"
-                />
-                <StatCard
-                    detail="91% include evidence"
-                    icon={Check}
-                    label="Missions Submitted"
-                    value="842"
-                />
-            </div>
-            <div className="grid-2">
-                <div className="card">
-                    <div className="card-header">
-                        <div>
-                            <h3>Badge Eligibility Queue</h3>
-                            <div className="small muted">
-                                Review course completion and final portfolios.
-                            </div>
-                        </div>
-                        <span className="tag tag-amber">12 pending</span>
-                    </div>
-                    <div className="queue">
-                        {queue.map(([student, detail]) => (
-                            <div className="queue-item" key={student}>
-                                <div>
-                                    <strong>{student}</strong>
-                                    <p>{detail}</p>
-                                </div>
-                                <button
-                                    className="btn btn-outline"
-                                    onClick={() =>
-                                        toast(
-                                            'Review workspace opened in the full system',
-                                        )
-                                    }
-                                    type="button"
-                                >
-                                    Review
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="card">
-                    <h3>Section Progress</h3>
-                    <div className="feed">
-                        {sections.map(([section, progress]) => (
-                            <div className="feed-item" key={section}>
-                                <div className="feed-meta">
-                                    <strong>{section}</strong>
-                                    <span>{progress}%</span>
-                                </div>
-                                <div className="linear-progress">
-                                    <span style={{ width: `${progress}%` }} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-}
-
-function AdminView({ toast }: { toast: (message: string) => void }) {
-    const moderationQueue = [
-        [
-            'Possible manipulated image',
-            '6 reports · 2 sources · appeal submitted',
-        ],
-        ['Unsupported medical claim', '11 reports · no primary source'],
-        ['Source credibility dispute', 'Contributor requested re-evaluation'],
-    ];
-    const safeguards = [
-        [
-            'Evidence requirement',
-            'Verified status requires credible references and moderator review.',
-        ],
-        [
-            'Community vote limitation',
-            'Votes inform review but cannot independently determine accuracy.',
-        ],
-        [
-            'Appeals and disputes',
-            'Users may request a second moderated evaluation.',
-        ],
-        [
-            'Course-finisher badge',
-            'Only qualified course finishers receive the Verified MILDA Contributor Badge.',
-        ],
-    ];
-
-    return (
-        <section className="view active">
-            <div className="notice">
-                <strong>
-                    Responsible AI, Privacy, and Community Safeguards
-                </strong>
-                <br />
-                AI analysis is advisory; evidence is required; reports and
-                sources are moderated; users may dispute or appeal results;
-                personal information must be protected; and community voting
-                alone does not establish factual accuracy.
-            </div>
-            <div className="grid-2">
-                <div className="card">
-                    <div className="card-header">
-                        <div>
-                            <h3>Moderation Queue</h3>
-                            <div className="small muted">
-                                Priority items requiring evidence-based review
-                            </div>
-                        </div>
-                        <span className="tag tag-red">8 urgent</span>
-                    </div>
-                    <div className="queue">
-                        {moderationQueue.map(([title, detail]) => (
-                            <div className="queue-item" key={title}>
-                                <div>
-                                    <strong>{title}</strong>
-                                    <p>{detail}</p>
-                                </div>
-                                <button
-                                    className="btn btn-outline"
-                                    onClick={() =>
-                                        toast(
-                                            'Review workspace opened in the full system',
-                                        )
-                                    }
-                                    type="button"
-                                >
-                                    Open
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="card">
-                    <h3>Safeguard Status</h3>
-                    <div className="feed">
-                        {safeguards.map(([title, detail]) => (
-                            <div className="feed-item" key={title}>
-                                <div className="feed-meta">
-                                    <strong>{title}</strong>
-                                    <span className="tag tag-green">
-                                        Enabled
-                                    </span>
-                                </div>
-                                <p>{detail}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-            <div className="grid-2">
-                <div className="card">
-                    <h3>Audit Log</h3>
-                    <div className="audit-log">
+                    <div className="student-side-card achievements-card">
+                        <h3>Recent Achievements</h3>
                         {[
                             [
-                                'Moderator updated content status',
-                                'Needs Verification → Under Review',
-                                '10:42',
+                                'Source Scout',
+                                'Added 20 trusted sources',
+                                ShieldCheck,
                             ],
                             [
-                                'New appeal submitted',
-                                'Case #MILDA-2041',
-                                '09:18',
+                                'Review Helper',
+                                'Completed 25 helpful reviews',
+                                Users,
                             ],
                             [
-                                'Trusted source accepted',
-                                'Official university advisory',
-                                'Yesterday',
+                                'Fact Builder',
+                                'Submitted 10 verified reports',
+                                Check,
                             ],
-                        ].map(([title, detail, time]) => (
-                            <div className="audit-item" key={title}>
-                                <span className="audit-dot" />
-                                <div>
-                                    <strong>{title}</strong>
-                                    <div className="tiny muted">{detail}</div>
+                        ].map(([name, detail, Icon]) => {
+                            const AchievementIcon = Icon as LucideIcon;
+
+                            return (
+                                <div key={name as string}>
+                                    <span>
+                                        <AchievementIcon />
+                                    </span>
+                                    <p>
+                                        <strong>{name as string}</strong>
+                                        <small>
+                                            {detail as string}
+                                            <br />
+                                            Earned May 10
+                                        </small>
+                                    </p>
                                 </div>
-                                <span className="tiny muted">{time}</span>
-                            </div>
-                        ))}
+                            );
+                        })}
+                        <button className="student-text-link" type="button">
+                            View all achievements <ChevronRight />
+                        </button>
                     </div>
-                </div>
-                <div className="card">
-                    <h3>Privacy Controls</h3>
-                    <div className="checklist">
-                        <ChecklistItem
-                            detail="Only information required for learning and moderation is retained."
-                            title="Minimize stored personal data"
-                        />
-                        <ChecklistItem
-                            detail="Access is restricted to authorized reviewers."
-                            title="Protect uploaded content"
-                        />
-                        <ChecklistItem
-                            detail="Status changes and appeals remain auditable."
-                            title="Maintain moderation logs"
-                        />
-                    </div>
-                </div>
+                </aside>
             </div>
         </section>
     );
@@ -1310,9 +1667,11 @@ function AdminView({ toast }: { toast: (message: string) => void }) {
 
 function Modal({
     children,
+    className = '',
     onClose,
 }: {
     children: ReactNode;
+    className?: string;
     onClose: () => void;
 }) {
     return (
@@ -1325,34 +1684,28 @@ function Modal({
             }}
             role="presentation"
         >
-            <div className="modal">{children}</div>
+            <div className={`modal ${className}`}>{children}</div>
         </div>
     );
 }
 
-export default function Milda({ syllabusUrl }: MildaProps) {
-    const [introOpen, setIntroOpen] = useState(true);
-    const [role, setRole] = useState<Role>('student');
+export default function Milda() {
     const [view, setView] = useState<View>('dashboard');
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [modal, setModal] = useState<ModalName>(null);
     const [modules, setModules] = useState(initialCourseModules);
-    const [moduleFilter, setModuleFilter] = useState<ModuleFilter>('all');
     const [activeModule, setActiveModule] = useState(6);
-    const [community, setCommunity] = useState(initialCommunityItems);
+    const [, setCommunity] = useState(initialCommunityItems);
     const [communityFilter, setCommunityFilter] =
         useState<CommunityFilter>('all');
-    const [verifyTab, setVerifyTab] = useState<VerifyTab>('text');
+    const [verifyTab, setVerifyTab] = useState<VerifyTab>('url');
     const [quickClaim, setQuickClaim] = useState('');
-    const [quickUrl, setQuickUrl] = useState('');
     const [verifyClaim, setVerifyClaim] = useState('');
     const [verifyUrl, setVerifyUrl] = useState('');
-    const [urlContext, setUrlContext] = useState('');
     const [analysisResult, setAnalysisResult] = useState(
         analysisScenarios.review,
     );
-    const [resultVisible, setResultVisible] = useState(false);
     const [selectedQuizAnswer, setSelectedQuizAnswer] = useState<number | null>(
         null,
     );
@@ -1368,20 +1721,6 @@ export default function Milda({ syllabusUrl }: MildaProps) {
     );
 
     const activeLesson = modules[activeModule];
-    const [heading, subheading] = viewInfo[view];
-    const visibleNavGroups = navGroups
-        .filter(({ label }) =>
-            role === 'student'
-                ? label !== 'Management'
-                : label === 'Management',
-        )
-        .map((group) => ({
-            ...group,
-            items:
-                group.label === 'Management'
-                    ? group.items.filter((item) => item.view === role)
-                    : group.items,
-        }));
 
     const toast = (message: string) => {
         const id = Date.now() + Math.random();
@@ -1398,21 +1737,6 @@ export default function Milda({ syllabusUrl }: MildaProps) {
         setView(nextView);
         setSidebarOpen(false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const enterRole = (nextRole: Role) => {
-        setRole(nextRole);
-        setIntroOpen(false);
-        showView(
-            nextRole === 'instructor'
-                ? 'instructor'
-                : nextRole === 'admin'
-                  ? 'admin'
-                  : 'dashboard',
-        );
-        toast(
-            `${nextRole.charAt(0).toUpperCase() + nextRole.slice(1)} prototype loaded`,
-        );
     };
 
     const openLesson = (index: number) => {
@@ -1458,9 +1782,8 @@ export default function Milda({ syllabusUrl }: MildaProps) {
         return analysisScenarios.review;
     };
 
-    const runAnalysis = (claim = verifyClaim || quickClaim || urlContext) => {
+    const runAnalysis = (claim = verifyClaim || quickClaim || verifyUrl) => {
         setAnalysisResult(determineAnalysis(claim));
-        setResultVisible(true);
         toast('Guided analysis completed');
         window.setTimeout(() => {
             document
@@ -1473,15 +1796,6 @@ export default function Milda({ syllabusUrl }: MildaProps) {
         setVerifyClaim(quickClaim);
         showView('verify');
         window.setTimeout(() => runAnalysis(quickClaim), 200);
-    };
-
-    const clearAnalysis = () => {
-        setVerifyClaim('');
-        setVerifyUrl('');
-        setUrlContext('');
-        setQuickClaim('');
-        setQuickUrl('');
-        setResultVisible(false);
     };
 
     const vote = (itemIndex: number, voteIndex: number) => {
@@ -1532,56 +1846,54 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                 />
             </Head>
 
-            {introOpen && (
-                <IntroScreen onEnter={enterRole} syllabusUrl={syllabusUrl} />
-            )}
-
-            <div className="app-shell">
+            <div className="app-shell student-shell">
                 <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                     <div className="brand">
-                        <div className="brand-mark">M</div>
-                        <div>
-                            <h1>MILDA</h1>
-                            <p>Learn. Verify. Share Responsibly.</p>
-                        </div>
+                        <span className="student-brand-icon">
+                            <Search />
+                        </span>
+                        <h1>
+                            <span>MIL</span>DA
+                        </h1>
                     </div>
-                    {visibleNavGroups.map((group) => (
-                        <div className="nav-group" key={group.label}>
-                            <div className="nav-label">{group.label}</div>
-                            <nav className="nav">
-                                {group.items.map((item) => (
-                                    <button
-                                        className={
-                                            view === item.view ? 'active' : ''
-                                        }
-                                        key={item.view}
-                                        onClick={() => showView(item.view)}
-                                        type="button"
-                                    >
-                                        <item.icon />
-                                        {item.label}
-                                    </button>
-                                ))}
-                            </nav>
-                        </div>
-                    ))}
-                    {role === 'student' && (
-                        <div className="sidebar-progress">
-                            <strong>Badge readiness · {courseProgress}%</strong>
-                            <div className="line">
-                                <span style={{ width: `${courseProgress}%` }} />
-                            </div>
-                            <p>
-                                Complete all course modules and the Digital
-                                Verification Portfolio.
-                            </p>
-                        </div>
-                    )}
+                    <nav aria-label="Student navigation" className="nav">
+                        {studentNavigation.map((item) => (
+                            <button
+                                aria-current={
+                                    view === item.view ? 'page' : undefined
+                                }
+                                className={view === item.view ? 'active' : ''}
+                                key={item.view}
+                                onClick={() => showView(item.view)}
+                                type="button"
+                            >
+                                <item.icon />
+                                {item.label}
+                            </button>
+                        ))}
+                    </nav>
+                    <button
+                        className="student-help-link"
+                        onClick={() =>
+                            toast('Help and support resources opened')
+                        }
+                        type="button"
+                    >
+                        <HelpCircle /> Help &amp; Support
+                    </button>
                 </aside>
+
+                <div
+                    className={`sidebar-backdrop ${sidebarOpen ? 'open' : ''}`}
+                    onClick={() => setSidebarOpen(false)}
+                    role="presentation"
+                />
+
                 <main className="main">
                     <header className="topbar">
-                        <div className="top-left">
+                        <div className="student-top-search">
                             <button
+                                aria-expanded={sidebarOpen}
                                 aria-label="Open navigation"
                                 className="mobile-menu"
                                 onClick={() =>
@@ -1591,67 +1903,44 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                             >
                                 <Menu />
                             </button>
-                            <div className="page-title">
-                                <h2>{heading}</h2>
-                                <p>{subheading}</p>
-                            </div>
-                        </div>
-                        <div className="top-actions">
-                            {role === 'student' && (
-                                <button
-                                    className="btn btn-outline prototype-label"
-                                    onClick={() => setModal('tour')}
-                                    type="button"
-                                >
-                                    <Sparkles />
-                                    Demo Tour
-                                </button>
-                            )}
-                            <button
-                                aria-label="Exit current role view"
-                                className="btn btn-danger exit-role-btn"
-                                onClick={() => {
-                                    setDrawerOpen(false);
-                                    setModal(null);
-                                    setSidebarOpen(false);
-                                    setIntroOpen(true);
-                                }}
-                                type="button"
-                            >
-                                <span
-                                    aria-hidden="true"
-                                    className="stop-icon"
+                            <label>
+                                <Search />
+                                <input
+                                    aria-label="Search verified content"
+                                    placeholder={
+                                        view === 'community'
+                                            ? 'Search community reports'
+                                            : 'Search verified content'
+                                    }
                                 />
-                                <span className="exit-role-label">
-                                    Exit View
-                                </span>
-                            </button>
-                            <select
-                                aria-label="Preview role"
-                                className="role-select"
-                                onChange={(event) =>
-                                    enterRole(event.target.value as Role)
-                                }
-                                value={role}
-                            >
-                                <option value="student">Student View</option>
-                                <option value="instructor">
-                                    Instructor View
-                                </option>
-                                <option value="admin">Admin View</option>
-                            </select>
+                            </label>
+                        </div>
+                        <div className="student-profile-actions">
                             <button
                                 aria-label="Notifications"
-                                className="icon-btn"
+                                className="student-notification"
                                 onClick={() => setDrawerOpen(true)}
                                 type="button"
                             >
                                 <Bell />
-                                <span className="dot" />
+                                <span>3</span>
                             </button>
-                            <div className="avatar">JC</div>
+                            <div className="student-avatar">AR</div>
+                            <button
+                                aria-label="Open student profile"
+                                className="student-profile"
+                                onClick={() => toast('Student profile opened')}
+                                type="button"
+                            >
+                                <span>
+                                    <strong>Alex Rivera</strong>
+                                    <small>Student Contributor</small>
+                                </span>
+                                <ChevronRight />
+                            </button>
                         </div>
                     </header>
+
                     <div className="content">
                         {view === 'dashboard' && (
                             <DashboardView
@@ -1659,31 +1948,18 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                                 courseProgress={courseProgress}
                                 openLesson={openLesson}
                                 quickClaim={quickClaim}
-                                quickUrl={quickUrl}
                                 setQuickClaim={setQuickClaim}
-                                setQuickUrl={setQuickUrl}
                                 showView={showView}
-                                syllabusUrl={syllabusUrl}
-                                toast={toast}
                             />
                         )}
                         {view === 'learn' && (
-                            <ModulesView
-                                moduleFilter={moduleFilter}
-                                modules={modules}
-                                openLesson={openLesson}
-                                setModuleFilter={setModuleFilter}
-                                syllabusUrl={syllabusUrl}
-                            />
+                            <ModulesView openLesson={openLesson} />
                         )}
                         {view === 'verify' && (
                             <VerificationView
-                                clearAnalysis={clearAnalysis}
                                 result={analysisResult}
-                                resultVisible={resultVisible}
                                 runAnalysis={() => runAnalysis()}
                                 setTab={setVerifyTab}
-                                setUrlContext={setUrlContext}
                                 setVerifyClaim={setVerifyClaim}
                                 setVerifyUrl={setVerifyUrl}
                                 submitForReview={() => {
@@ -1693,7 +1969,6 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                                     );
                                 }}
                                 tab={verifyTab}
-                                urlContext={urlContext}
                                 verifyClaim={verifyClaim}
                                 verifyUrl={verifyUrl}
                             />
@@ -1701,26 +1976,29 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                         {view === 'community' && (
                             <CommunityView
                                 filter={communityFilter}
-                                items={community}
                                 setFilter={setCommunityFilter}
+                                showView={showView}
                                 toast={toast}
                                 vote={vote}
                             />
+                        )}
+                        {view === 'contributions' && (
+                            <ContributionsView toast={toast} />
                         )}
                         {view === 'leaderboard' && (
                             <LeaderboardView
                                 openPolicy={() => setModal('policy')}
                             />
                         )}
-                        {view === 'instructor' && (
-                            <InstructorView toast={toast} />
-                        )}
-                        {view === 'admin' && <AdminView toast={toast} />}
+
                         <footer className="footer">
-                            Team QuantumX · Universidad de Dagupan · UNESCO
-                            Youth Hackathon 2026
-                            <br />
-                            <strong>Learn. Verify. Share Responsibly.</strong>
+                            <span>
+                                <ShieldCheck /> AI guides. Humans decide.
+                                Communities verify.
+                            </span>
+                            <span>
+                                by <strong>QuantumX</strong>
+                            </span>
                         </footer>
                     </div>
                 </main>
@@ -1765,176 +2043,229 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                 <div className="notification">
                     <strong>Portfolio feedback received</strong>
                     <p>
-                        Your instructor requested one additional source for Item
-                        3.
+                        One additional trusted source is needed for portfolio
+                        item 3.
                     </p>
                 </div>
             </aside>
 
             {modal === 'lesson' && activeLesson && (
-                <Modal onClose={() => setModal(null)}>
-                    <div className="modal-head">
-                        <div>
-                            <span className="tag tag-blue">
+                <Modal
+                    className="student-lesson-modal"
+                    onClose={() => setModal(null)}
+                >
+                    <div className="lesson-modal-topbar">
+                        <div className="lesson-breadcrumb">
+                            <BookOpen />
+                            <span>Learning Center</span>
+                            <ChevronRight />
+                            <span>Module {activeModule + 1}</span>
+                        </div>
+                        <button
+                            aria-label="Close lesson"
+                            className="lesson-modal-close"
+                            onClick={() => setModal(null)}
+                            type="button"
+                        >
+                            <X />
+                        </button>
+                    </div>
+
+                    <header className="lesson-modal-hero">
+                        <div className="lesson-modal-number">
+                            {activeModule + 1}
+                        </div>
+                        <div className="lesson-modal-title">
+                            <span
+                                className={`lesson-state ${
+                                    activeLesson.progress === 100
+                                        ? 'completed'
+                                        : activeLesson.progress > 0
+                                          ? 'progress'
+                                          : 'preview'
+                                }`}
+                            >
+                                {activeLesson.progress === 100 ? (
+                                    <CircleCheck />
+                                ) : (
+                                    <CirclePlay />
+                                )}
                                 {activeLesson.progress === 100
-                                    ? 'Completed module'
+                                    ? 'Completed'
                                     : activeLesson.progress > 0
                                       ? 'In progress'
                                       : 'Module preview'}
                             </span>
-                            <h2>
-                                {activeModule + 1}. {activeLesson.title}
-                            </h2>
-                            <div className="small muted">
-                                {activeLesson.description}
-                            </div>
-                        </div>
-                        <button
-                            aria-label="Close lesson"
-                            className="close-btn"
-                            onClick={() => setModal(null)}
-                            type="button"
-                        >
-                            <X />
-                        </button>
-                    </div>
-                    <div className="lesson-objectives">
-                        {lessonObjectives.map((objective) => (
-                            <div className="objective" key={objective.title}>
-                                <strong>{objective.title}</strong>
-                                <br />
-                                <span className="muted">
-                                    {objective.description}
+                            <h2>{activeLesson.title}</h2>
+                            <p>{activeLesson.description}</p>
+                            <div className="lesson-modal-meta">
+                                <span>
+                                    <Clock3 /> {activeLesson.duration}
+                                </span>
+                                <span>
+                                    <ClipboardList /> 4 learning items
+                                </span>
+                                <span>
+                                    <Award /> Knowledge check
                                 </span>
                             </div>
-                        ))}
-                    </div>
-                    <div className="notice">
-                        <strong>Practical activity:</strong> Apply the lesson to
-                        a real or simulated online post and document the
-                        evidence used.
-                    </div>
-                    <div className="quiz-box">
-                        <strong>Knowledge check</strong>
-                        <div className="small muted quiz-question">
-                            Which action best supports responsible verification?
                         </div>
-                        <div className="quiz-options">
-                            {[
-                                'Share immediately if the claim has many likes.',
-                                'Compare the claim with credible primary and independent sources.',
-                                'Trust the first AI-generated answer without checking evidence.',
-                            ].map((answer, index) => (
-                                <button
-                                    className={`quiz-option ${selectedQuizAnswer === index && index === 1 ? 'correct' : ''}`}
-                                    key={answer}
-                                    onClick={() => {
-                                        setSelectedQuizAnswer(index);
-                                        toast(
-                                            index === 1
-                                                ? 'Correct: verify with credible evidence'
-                                                : 'Try again: popularity is not evidence',
-                                        );
-                                    }}
-                                    type="button"
+                    </header>
+
+                    <div className="lesson-modal-progress">
+                        <div>
+                            <span>Module progress</span>
+                            <strong>{activeLesson.progress}%</strong>
+                        </div>
+                        <StudentProgress value={activeLesson.progress} />
+                    </div>
+
+                    <div className="lesson-modal-content">
+                        <section className="lesson-objective-panel">
+                            <div className="lesson-panel-heading">
+                                <span>
+                                    <Target />
+                                </span>
+                                <div>
+                                    <h3>Learning objectives</h3>
+                                    <p>
+                                        What you’ll be able to do after this
+                                        module.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="lesson-objectives">
+                                {lessonObjectives.map((objective, index) => (
+                                    <div
+                                        className="objective"
+                                        key={objective.title}
+                                    >
+                                        <span>{index + 1}</span>
+                                        <div>
+                                            <strong>{objective.title}</strong>
+                                            <p>{objective.description}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="lesson-activity">
+                                <span>
+                                    <Sparkles />
+                                </span>
+                                <div>
+                                    <strong>Practical activity</strong>
+                                    <p>
+                                        Apply the lesson to a real or simulated
+                                        online post and document the evidence
+                                        you used.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section className="lesson-quiz-panel">
+                            <div className="lesson-panel-heading">
+                                <span>
+                                    <HelpCircle />
+                                </span>
+                                <div>
+                                    <h3>Knowledge check</h3>
+                                    <p>Choose the best answer to continue.</p>
+                                </div>
+                            </div>
+                            <h4>
+                                Which action best supports responsible
+                                verification?
+                            </h4>
+                            <div className="quiz-options">
+                                {[
+                                    'Share immediately if the claim has many likes.',
+                                    'Compare the claim with credible primary and independent sources.',
+                                    'Trust the first AI-generated answer without checking evidence.',
+                                ].map((answer, index) => {
+                                    const isSelected =
+                                        selectedQuizAnswer === index;
+                                    const isCorrect = index === 1;
+
+                                    return (
+                                        <button
+                                            aria-pressed={isSelected}
+                                            className={`quiz-option ${
+                                                isSelected
+                                                    ? isCorrect
+                                                        ? 'selected correct'
+                                                        : 'selected incorrect'
+                                                    : ''
+                                            }`}
+                                            key={answer}
+                                            onClick={() => {
+                                                setSelectedQuizAnswer(index);
+                                                toast(
+                                                    isCorrect
+                                                        ? 'Correct: verify with credible evidence'
+                                                        : 'Try again: popularity is not evidence',
+                                                );
+                                            }}
+                                            type="button"
+                                        >
+                                            <span>
+                                                {String.fromCharCode(
+                                                    65 + index,
+                                                )}
+                                            </span>
+                                            <strong>{answer}</strong>
+                                            {isSelected &&
+                                                (isCorrect ? <Check /> : <X />)}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {selectedQuizAnswer !== null && (
+                                <div
+                                    className={`quiz-feedback ${
+                                        selectedQuizAnswer === 1
+                                            ? 'correct'
+                                            : 'incorrect'
+                                    }`}
                                 >
-                                    {answer}
-                                </button>
-                            ))}
-                        </div>
+                                    {selectedQuizAnswer === 1 ? (
+                                        <Check />
+                                    ) : (
+                                        <Info />
+                                    )}
+                                    <span>
+                                        {selectedQuizAnswer === 1
+                                            ? 'Correct. Credible, independent evidence is the foundation of responsible verification.'
+                                            : 'Not quite. Popularity and AI confidence are not substitutes for credible evidence.'}
+                                    </span>
+                                </div>
+                            )}
+                        </section>
                     </div>
-                    <div className="modal-actions">
+
+                    <div className="lesson-modal-actions">
                         <button
-                            className="btn btn-outline"
+                            className="student-outline-button"
                             onClick={() => setModal(null)}
                             type="button"
                         >
-                            Close
+                            Back to Learning Center
                         </button>
                         <button
-                            className="btn btn-dark"
+                            className="student-primary-button"
+                            disabled={activeLesson.progress === 100}
                             onClick={completeModule}
                             type="button"
                         >
-                            {activeLesson.progress === 100
-                                ? 'Completed'
-                                : 'Mark Module Complete'}
-                        </button>
-                    </div>
-                </Modal>
-            )}
-
-            {modal === 'tour' && (
-                <Modal onClose={() => setModal(null)}>
-                    <div className="modal-head">
-                        <div>
-                            <span className="tag tag-purple">
-                                Pitch-friendly guided tour
-                            </span>
-                            <h2>How MILDA works</h2>
-                            <div className="small muted">
-                                A four-part story you can demonstrate during the
-                                hackathon pitch.
-                            </div>
-                        </div>
-                        <button
-                            aria-label="Close tour"
-                            className="close-btn"
-                            onClick={() => setModal(null)}
-                            type="button"
-                        >
-                            <X />
-                        </button>
-                    </div>
-                    {[
-                        [
-                            BookOpen,
-                            '1. Students learn',
-                            'Structured modules teach source evaluation, fact-checking, AI literacy, manipulated media, ethics, and digital citizenship.',
-                        ],
-                        [
-                            Check,
-                            '2. Students verify',
-                            'The web app guides users through claim extraction, source checking, evidence comparison, and reflection.',
-                        ],
-                        [
-                            Users,
-                            '3. Communities contribute',
-                            'Users may report content, add trusted sources, review evidence, and dispute results under moderation.',
-                        ],
-                        [
-                            Award,
-                            '4. Course finishers are recognized',
-                            'Qualified finishers earn the Verified MILDA Contributor Badge after completing the course and portfolio review.',
-                        ],
-                    ].map(([TourIcon, title, detail]) => {
-                        const Icon = TourIcon as LucideIcon;
-
-                        return (
-                            <div className="tour-step" key={title as string}>
-                                <div className="icon">
-                                    <Icon />
-                                </div>
-                                <div>
-                                    <h4>{title as string}</h4>
-                                    <p>{detail as string}</p>
-                                </div>
-                            </div>
-                        );
-                    })}
-                    <div className="tour-actions">
-                        <button
-                            className="btn btn-dark"
-                            onClick={() => {
-                                setModal(null);
-                                showView('dashboard');
-                                toast(
-                                    'Tour started: begin with the student dashboard',
-                                );
-                            }}
-                            type="button"
-                        >
-                            Start with Dashboard
+                            {activeLesson.progress === 100 ? (
+                                <>
+                                    <CircleCheck /> Module Completed
+                                </>
+                            ) : (
+                                <>
+                                    Mark Module Complete <ChevronRight />
+                                </>
+                            )}
                         </button>
                     </div>
                 </Modal>
@@ -1975,7 +2306,7 @@ export default function Milda({ syllabusUrl }: MildaProps) {
                         <ChecklistItem
                             detail="The course finisher must meet the minimum quality criteria."
                             mark="3"
-                            title="Pass instructor review"
+                            title="Pass final portfolio review"
                         />
                         <ChecklistItem
                             detail="Badge holders may receive higher credibility weight, but evidence and safeguards still apply."

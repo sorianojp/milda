@@ -2,6 +2,8 @@ export type CourseModule = {
     title: string;
     description: string;
     progress: number;
+    duration: string;
+    topics: [string, string, string];
 };
 
 export type CommunityItem = {
@@ -32,72 +34,144 @@ export const courseModules: CourseModule[] = [
         description:
             'Core MIL concepts, information ecosystems, and responsible digital participation.',
         progress: 100,
+        duration: '45 min',
+        topics: [
+            'The information ecosystem',
+            'Media literacy foundations',
+            'Responsible participation',
+        ],
     },
     {
         title: 'Misinformation, Disinformation, and Malinformation',
         description:
             'Identify different forms of information disorder in digital contexts.',
         progress: 100,
+        duration: '55 min',
+        topics: [
+            'Types of false information',
+            'Intent and potential harm',
+            'Real-world classification',
+        ],
     },
     {
         title: 'Information Disorder and Online Sharing Behavior',
         description:
             'Understand how misleading content spreads and why people share it.',
         progress: 100,
+        duration: '50 min',
+        topics: [
+            'How content travels online',
+            'Emotion and sharing behavior',
+            'Interrupting harmful cycles',
+        ],
     },
     {
         title: 'Evaluating Online Sources and Claims',
         description:
             'Apply credibility indicators and source-evaluation criteria.',
         progress: 100,
+        duration: '1 hr 10 min',
+        topics: [
+            'Authority and credibility',
+            'Context, date, and purpose',
+            'Lateral source checking',
+        ],
     },
     {
         title: 'Fact-Checking and Verification Techniques',
         description:
             'Practice source triangulation, reverse image search, and evidence checking.',
         progress: 100,
+        duration: '1 hr 20 min',
+        topics: [
+            'Claim decomposition',
+            'Search and source triangulation',
+            'Image verification',
+        ],
     },
     {
         title: 'Community Verification and Reporting',
         description:
             'Report suspicious content and contribute trusted references responsibly.',
         progress: 100,
+        duration: '55 min',
+        topics: [
+            'Evidence-based reporting',
+            'Constructive peer review',
+            'Moderation and appeals',
+        ],
     },
     {
         title: 'AI-Generated Content and AI Hallucinations',
         description:
             'Recognize AI limitations, hallucinations, and possible synthetic content.',
         progress: 60,
+        duration: '1 hr 5 min',
+        topics: [
+            'How generative AI responds',
+            'Hallucinations and confidence',
+            'Verifying AI-assisted outputs',
+        ],
     },
     {
         title: 'Deepfakes and Manipulated Media',
         description:
             'Analyze synthetic media, visual artifacts, and edited images or videos.',
         progress: 25,
+        duration: '1 hr 15 min',
+        topics: [
+            'Synthetic media signals',
+            'Visual and audio artifacts',
+            'Original-source tracing',
+        ],
     },
     {
         title: 'Responsible Sharing and Digital Citizenship',
         description:
             'Develop ethical habits for communication and information sharing.',
         progress: 0,
+        duration: '45 min',
+        topics: [
+            'Pause-before-sharing habits',
+            'Digital empathy and impact',
+            'Correcting false information',
+        ],
     },
     {
         title: 'Ethics of AI and Online Information',
         description:
             'Examine privacy, bias, transparency, accountability, and intellectual honesty.',
         progress: 0,
+        duration: '1 hr',
+        topics: [
+            'Bias and representation',
+            'Privacy and informed consent',
+            'Transparency and accountability',
+        ],
     },
     {
         title: 'MILDA Practical Verification Activities',
         description:
             'Complete guided verification missions using MILDA digital tools.',
         progress: 0,
+        duration: '1 hr 30 min',
+        topics: [
+            'Select a verification case',
+            'Gather and compare evidence',
+            'Publish a reasoned finding',
+        ],
     },
     {
         title: 'Digital Verification Portfolio',
         description:
             'Prepare and present the final evidence-based verification portfolio.',
         progress: 0,
+        duration: '2 hrs',
+        topics: [
+            'Curate verification evidence',
+            'Reflect on methods and ethics',
+            'Submit for instructor review',
+        ],
     },
 ];
 
