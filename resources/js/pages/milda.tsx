@@ -46,9 +46,8 @@ import {
     analysisScenarios,
     communityItems as initialCommunityItems,
     courseModules as initialCourseModules,
-    lessonObjectives,
 } from '@/data/milda';
-import type { AnalysisScenario } from '@/data/milda';
+import type { AnalysisScenario, CourseModule } from '@/data/milda';
 import '../../css/milda.css';
 
 type View =
@@ -231,6 +230,7 @@ function ChecklistItem({
 
 function DashboardView({
     courseProgress,
+    modules,
     quickClaim,
     setQuickClaim,
     showView,
@@ -238,6 +238,7 @@ function DashboardView({
     analyzeQuickClaim,
 }: {
     courseProgress: number;
+    modules: CourseModule[];
     quickClaim: string;
     setQuickClaim: (value: string) => void;
     showView: (view: View) => void;
@@ -245,12 +246,19 @@ function DashboardView({
     analyzeQuickClaim: () => void;
 }) {
     const [quickTab, setQuickTab] = useState<VerifyTab>('url');
+    const continueModuleIndex = Math.max(
+        0,
+        modules.findIndex(
+            (module) => module.progress > 0 && module.progress < 100,
+        ),
+    );
+    const continueModule = modules[continueModuleIndex];
 
     return (
         <section className="view active student-view student-dashboard">
             <StudentPageTitle
                 subtitle="Learn. Verify. Share Responsibly."
-                title="Good day, Alex"
+                title="Good day, Nicole"
             />
             <div className="student-page-layout">
                 <div className="student-primary">
@@ -399,24 +407,24 @@ function DashboardView({
                                     <Check />
                                 </div>
                                 <div>
-                                    <h3>
-                                        Evaluating Online Sources and Claims
-                                    </h3>
-                                    <p>
-                                        Learn how to assess credibility,
-                                        identify bias, and evaluate evidence in
-                                        online content.
-                                    </p>
-                                    <small>Lesson 4 of 6</small>
+                                    <h3>{continueModule.title}</h3>
+                                    <p>{continueModule.description}</p>
+                                    <small>
+                                        Module {continueModuleIndex + 1} of{' '}
+                                        {modules.length} ·{' '}
+                                        {continueModule.duration}
+                                    </small>
                                     <div className="learning-progress-row">
-                                        <StudentProgress value={67} />
-                                        <span>67%</span>
+                                        <StudentProgress
+                                            value={continueModule.progress}
+                                        />
+                                        <span>{continueModule.progress}%</span>
                                     </div>
                                 </div>
                             </div>
                             <button
                                 className="student-primary-button"
-                                onClick={() => openLesson(6)}
+                                onClick={() => openLesson(continueModuleIndex)}
                                 type="button"
                             >
                                 Continue Module <ChevronRight />
@@ -526,21 +534,25 @@ function DashboardView({
     );
 }
 
-function ModulesView({ openLesson }: { openLesson: (index: number) => void }) {
-    const learningTitles = [
-        'Introduction to Media and Information Literacy',
-        'Misinformation, Disinformation, and Malinformation',
-        'Information Disorder and Online Sharing Behavior',
-        'Evaluating Online Sources and Claims',
-        'Fact-Checking and Verification Techniques',
-        'Community Verification and Reporting',
-        'AI-Generated Content and AI Hallucinations',
-        'Deepfakes and Manipulated Media',
-        'Media Literacy in the Age of Social Media',
-        'Data Privacy and Digital Well-being',
-        'Civic Engagement and Digital Responsibility',
-        'Capstone Project: Verify for Impact',
-    ];
+function ModulesView({
+    courseProgress,
+    modules,
+    openLesson,
+}: {
+    courseProgress: number;
+    modules: CourseModule[];
+    openLesson: (index: number) => void;
+}) {
+    const completedModules = modules.filter(
+        (module) => module.progress === 100,
+    ).length;
+    const resumeModuleIndex = Math.max(
+        0,
+        modules.findIndex(
+            (module) => module.progress > 0 && module.progress < 100,
+        ),
+    );
+    const resumeModule = modules[resumeModuleIndex];
 
     return (
         <section className="view active student-view student-learn">
@@ -555,13 +567,13 @@ function ModulesView({ openLesson }: { openLesson: (index: number) => void }) {
                             detail="On track"
                             icon={GraduationCap}
                             label="Course Progress"
-                            value="65%"
+                            value={`${courseProgress}%`}
                         />
                         <StudentStatCard
                             detail="Modules"
                             icon={ClipboardList}
                             label="Completed Modules"
-                            value="7 of 12"
+                            value={`${completedModules} of ${modules.length}`}
                         />
                         <StudentStatCard
                             detail="Keep it up!"
@@ -586,21 +598,20 @@ function ModulesView({ openLesson }: { openLesson: (index: number) => void }) {
                             </div>
                             <div>
                                 <h2>
-                                    Module 8: Deepfakes and Manipulated Media
+                                    Module {resumeModuleIndex + 1}:{' '}
+                                    {resumeModule.title}
                                 </h2>
-                                <p>
-                                    Learn how deepfakes are created, how to
-                                    detect them, and understand the risks and
-                                    real-world impact of manipulated media.
-                                </p>
+                                <p>{resumeModule.description}</p>
                                 <div className="resume-progress">
-                                    <StudentProgress value={45} />
-                                    <strong>45%</strong>
+                                    <StudentProgress
+                                        value={resumeModule.progress}
+                                    />
+                                    <strong>{resumeModule.progress}%</strong>
                                 </div>
                             </div>
                             <button
                                 className="student-primary-button"
-                                onClick={() => openLesson(7)}
+                                onClick={() => openLesson(resumeModuleIndex)}
                                 type="button"
                             >
                                 Continue Learning <ChevronRight />
@@ -612,11 +623,11 @@ function ModulesView({ openLesson }: { openLesson: (index: number) => void }) {
                         Media and Information Literacy in the Digital Age
                     </h2>
                     <div className="learning-module-grid">
-                        {learningTitles.map((title, index) => {
+                        {modules.map((module, index) => {
                             const state =
-                                index < 7
+                                module.progress === 100
                                     ? 'completed'
-                                    : index === 7
+                                    : module.progress > 0
                                       ? 'progress'
                                       : 'locked';
 
@@ -624,7 +635,7 @@ function ModulesView({ openLesson }: { openLesson: (index: number) => void }) {
                                 <button
                                     className={`learning-module-card ${state}`}
                                     disabled={state === 'locked'}
-                                    key={title}
+                                    key={module.title}
                                     onClick={() => openLesson(index)}
                                     type="button"
                                 >
@@ -632,8 +643,9 @@ function ModulesView({ openLesson }: { openLesson: (index: number) => void }) {
                                         {index + 1}
                                     </span>
                                     <span>
-                                        <strong>{title}</strong>
+                                        <strong>{module.title}</strong>
                                         <small>
+                                            {module.period} ·{' '}
                                             {state === 'completed' && (
                                                 <>
                                                     <CircleCheck /> Completed
@@ -880,7 +892,7 @@ function VerificationView({
                                 </div>
                                 <div>
                                     <dt>Submitted by:</dt>
-                                    <dd>Alex Rivera</dd>
+                                    <dd>Nicole Martin</dd>
                                 </div>
                                 <div>
                                     <dt>Source:</dt>
@@ -1115,7 +1127,7 @@ function CommunityView({
             tag: 'Reliable',
             evidence: '5',
             votes: '28',
-            user: 'Alex Rivera',
+            user: 'Nicole Martin',
         },
         {
             title: 'A celebrity endorsed this investment platform',
@@ -1690,9 +1702,9 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
                             <span>Your Rank</span>
                             <strong>#12</strong>
                         </div>
-                        <span className="podium-avatar">AR</span>
+                        <span className="podium-avatar">NM</span>
                         <div>
-                            <strong>Alex Rivera</strong>
+                            <strong>Nicole Martin</strong>
                             <small>University of California, Berkeley</small>
                         </div>
                         <div>
@@ -2066,7 +2078,7 @@ export default function Milda() {
                                 <Bell />
                                 <span>3</span>
                             </button>
-                            <div className="student-avatar">AR</div>
+                            <div className="student-avatar">NM</div>
                             <button
                                 aria-label="Open student profile"
                                 className="student-profile"
@@ -2074,7 +2086,7 @@ export default function Milda() {
                                 type="button"
                             >
                                 <span>
-                                    <strong>Alex Rivera</strong>
+                                    <strong>Nicole Martin</strong>
                                     <small>Student Contributor</small>
                                 </span>
                                 <ChevronRight />
@@ -2087,6 +2099,7 @@ export default function Milda() {
                             <DashboardView
                                 analyzeQuickClaim={analyzeQuickClaim}
                                 courseProgress={courseProgress}
+                                modules={modules}
                                 openLesson={openLesson}
                                 quickClaim={quickClaim}
                                 setQuickClaim={setQuickClaim}
@@ -2094,7 +2107,11 @@ export default function Milda() {
                             />
                         )}
                         {view === 'learn' && (
-                            <ModulesView openLesson={openLesson} />
+                            <ModulesView
+                                courseProgress={courseProgress}
+                                modules={modules}
+                                openLesson={openLesson}
+                            />
                         )}
                         {view === 'verify' && (
                             <VerificationView
@@ -2244,10 +2261,15 @@ export default function Milda() {
                                     <Clock3 /> {activeLesson.duration}
                                 </span>
                                 <span>
-                                    <ClipboardList /> 4 learning items
+                                    <GraduationCap /> {activeLesson.period}{' '}
+                                    period
                                 </span>
                                 <span>
-                                    <Award /> Knowledge check
+                                    <ClipboardList />{' '}
+                                    {activeLesson.objectives.length} objectives
+                                </span>
+                                <span>
+                                    <Award /> {activeLesson.quiz.title}
                                 </span>
                             </div>
                         </div>
@@ -2276,18 +2298,22 @@ export default function Milda() {
                                 </div>
                             </div>
                             <div className="lesson-objectives">
-                                {lessonObjectives.map((objective, index) => (
-                                    <div
-                                        className="objective"
-                                        key={objective.title}
-                                    >
-                                        <span>{index + 1}</span>
-                                        <div>
-                                            <strong>{objective.title}</strong>
-                                            <p>{objective.description}</p>
+                                {activeLesson.objectives.map(
+                                    (objective, index) => (
+                                        <div
+                                            className="objective"
+                                            key={`${objective.title}-${index}`}
+                                        >
+                                            <span>{index + 1}</span>
+                                            <div>
+                                                <strong>
+                                                    {objective.title}
+                                                </strong>
+                                                <p>{objective.description}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ),
+                                )}
                             </div>
                             <div className="lesson-activity">
                                 <span>
@@ -2295,11 +2321,7 @@ export default function Milda() {
                                 </span>
                                 <div>
                                     <strong>Practical activity</strong>
-                                    <p>
-                                        Apply the lesson to a real or simulated
-                                        online post and document the evidence
-                                        you used.
-                                    </p>
+                                    <p>{activeLesson.activity}</p>
                                 </div>
                             </div>
                         </section>
@@ -2310,74 +2332,81 @@ export default function Milda() {
                                     <HelpCircle />
                                 </span>
                                 <div>
-                                    <h3>Knowledge check</h3>
-                                    <p>Choose the best answer to continue.</p>
+                                    <h3>{activeLesson.quiz.title}</h3>
+                                    <p>{activeLesson.quiz.directions}</p>
                                 </div>
                             </div>
-                            <h4>
-                                Which action best supports responsible
-                                verification?
-                            </h4>
+                            <h4>{activeLesson.quiz.question}</h4>
                             <div className="quiz-options">
-                                {[
-                                    'Share immediately if the claim has many likes.',
-                                    'Compare the claim with credible primary and independent sources.',
-                                    'Trust the first AI-generated answer without checking evidence.',
-                                ].map((answer, index) => {
-                                    const isSelected =
-                                        selectedQuizAnswer === index;
-                                    const isCorrect = index === 1;
+                                {activeLesson.quiz.answers.map(
+                                    (answer, index) => {
+                                        const isSelected =
+                                            selectedQuizAnswer === index;
+                                        const isCorrect =
+                                            index ===
+                                            activeLesson.quiz.correctAnswer;
 
-                                    return (
-                                        <button
-                                            aria-pressed={isSelected}
-                                            className={`quiz-option ${
-                                                isSelected
-                                                    ? isCorrect
-                                                        ? 'selected correct'
-                                                        : 'selected incorrect'
-                                                    : ''
-                                            }`}
-                                            key={answer}
-                                            onClick={() => {
-                                                setSelectedQuizAnswer(index);
-                                                toast(
-                                                    isCorrect
-                                                        ? 'Correct: verify with credible evidence'
-                                                        : 'Try again: popularity is not evidence',
-                                                );
-                                            }}
-                                            type="button"
-                                        >
-                                            <span>
-                                                {String.fromCharCode(
-                                                    65 + index,
-                                                )}
-                                            </span>
-                                            <strong>{answer}</strong>
-                                            {isSelected &&
-                                                (isCorrect ? <Check /> : <X />)}
-                                        </button>
-                                    );
-                                })}
+                                        return (
+                                            <button
+                                                aria-pressed={isSelected}
+                                                className={`quiz-option ${
+                                                    isSelected
+                                                        ? isCorrect
+                                                            ? 'selected correct'
+                                                            : 'selected incorrect'
+                                                        : ''
+                                                }`}
+                                                key={answer}
+                                                onClick={() => {
+                                                    setSelectedQuizAnswer(
+                                                        index,
+                                                    );
+                                                    toast(
+                                                        isCorrect
+                                                            ? 'Correct answer'
+                                                            : 'Review the lesson and try again',
+                                                    );
+                                                }}
+                                                type="button"
+                                            >
+                                                <span>
+                                                    {String.fromCharCode(
+                                                        65 + index,
+                                                    )}
+                                                </span>
+                                                <strong>{answer}</strong>
+                                                {isSelected &&
+                                                    (isCorrect ? (
+                                                        <Check />
+                                                    ) : (
+                                                        <X />
+                                                    ))}
+                                            </button>
+                                        );
+                                    },
+                                )}
                             </div>
                             {selectedQuizAnswer !== null && (
                                 <div
                                     className={`quiz-feedback ${
-                                        selectedQuizAnswer === 1
+                                        selectedQuizAnswer ===
+                                        activeLesson.quiz.correctAnswer
                                             ? 'correct'
                                             : 'incorrect'
                                     }`}
                                 >
-                                    {selectedQuizAnswer === 1 ? (
+                                    {selectedQuizAnswer ===
+                                    activeLesson.quiz.correctAnswer ? (
                                         <Check />
                                     ) : (
                                         <Info />
                                     )}
                                     <span>
-                                        {selectedQuizAnswer === 1
-                                            ? 'Correct. Credible, independent evidence is the foundation of responsible verification.'
-                                            : 'Not quite. Popularity and AI confidence are not substitutes for credible evidence.'}
+                                        {selectedQuizAnswer ===
+                                        activeLesson.quiz.correctAnswer
+                                            ? activeLesson.quiz.correctFeedback
+                                            : activeLesson.quiz
+                                                  .incorrectFeedback}
                                     </span>
                                 </div>
                             )}
