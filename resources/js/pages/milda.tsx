@@ -2048,7 +2048,7 @@ export default function Milda() {
                     >
                         <span>MILDA Prototypes</span>
                         <a
-                            href="https://www.figma.com/design/3fQlZugPdu36bv2znVN0fL/MILDA-UNESCO-HACKATHON?node-id=1-301&m=dev&t=XsqAl84etT4WwOBu-1"
+                            href="https://www.figma.com/proto/3fQlZugPdu36bv2znVN0fL/MILDA-UNESCO-HACKATHON?node-id=1-301&t=XsqAl84etT4WwOBu-1"
                             rel="noreferrer"
                             target="_blank"
                         >
