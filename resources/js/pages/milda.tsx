@@ -28,8 +28,10 @@ import {
     Menu,
     MessageSquare,
     Plus,
+    Puzzle,
     Search,
     ShieldCheck,
+    Smartphone,
     Sparkles,
     Target,
     ThumbsUp,
@@ -1453,7 +1455,17 @@ function ContributionsView({ toast }: { toast: (message: string) => void }) {
                             </div>
                         </div>
                         <div className="student-table-wrap">
-                            <table>
+                            <table className="contribution-table">
+                                <caption className="sr-only">
+                                    Nicole Martin&apos;s contribution history
+                                </caption>
+                                <colgroup>
+                                    <col className="content-column" />
+                                    <col className="contribution-column" />
+                                    <col className="status-column" />
+                                    <col className="points-column" />
+                                    <col className="date-column" />
+                                </colgroup>
                                 <thead>
                                     <tr>
                                         <th>Content</th>
@@ -1467,12 +1479,16 @@ function ContributionsView({ toast }: { toast: (message: string) => void }) {
                                     {history.map((row, index) => (
                                         <tr key={row[0]}>
                                             <td>
-                                                {index === 1 ? (
-                                                    <Image />
-                                                ) : (
-                                                    <Link />
-                                                )}
-                                                <strong>{row[0]}</strong>
+                                                <div className="contribution-content">
+                                                    <span className="contribution-type-icon">
+                                                        {index === 1 ? (
+                                                            <Image />
+                                                        ) : (
+                                                            <Link />
+                                                        )}
+                                                    </span>
+                                                    <strong>{row[0]}</strong>
+                                                </div>
                                             </td>
                                             <td>{row[1]}</td>
                                             <td>
@@ -2002,12 +2018,13 @@ export default function Milda() {
             <div className="app-shell student-shell">
                 <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                     <div className="brand">
-                        <span className="student-brand-icon">
-                            <Search />
-                        </span>
-                        <h1>
-                            <span>MIL</span>DA
-                        </h1>
+                        <img
+                            alt="MILDA"
+                            className="student-brand-logo"
+                            height={42}
+                            src="/images/milda-logo.png"
+                            width={190}
+                        />
                     </div>
                     <nav aria-label="Student navigation" className="nav">
                         {studentNavigation.map((item) => (
@@ -2025,6 +2042,30 @@ export default function Milda() {
                             </button>
                         ))}
                     </nav>
+                    <div
+                        aria-label="MILDA companion prototypes"
+                        className="student-prototype-links"
+                    >
+                        <span>MILDA Prototypes</span>
+                        <a
+                            href="https://www.figma.com/design/3fQlZugPdu36bv2znVN0fL/MILDA-UNESCO-HACKATHON?node-id=1-301&m=dev&t=XsqAl84etT4WwOBu-1"
+                            rel="noreferrer"
+                            target="_blank"
+                        >
+                            <Smartphone />
+                            <strong>Mobile App</strong>
+                            <ExternalLink />
+                        </a>
+                        <a
+                            href="https://www.figma.com/proto/3fQlZugPdu36bv2znVN0fL/MILDA-UNESCO-HACKATHON?node-id=0-1&t=XsqAl84etT4WwOBu-1"
+                            rel="noreferrer"
+                            target="_blank"
+                        >
+                            <Puzzle />
+                            <strong>Browser Extension</strong>
+                            <ExternalLink />
+                        </a>
+                    </div>
                     <button
                         className="student-help-link"
                         onClick={() =>
@@ -2154,9 +2195,17 @@ export default function Milda() {
                                 <ShieldCheck /> AI guides. Humans decide.
                                 Communities verify.
                             </span>
-                            <span>
-                                by <strong>QuantumX</strong>
-                            </span>
+                            <div className="team-credit">
+                                <span>by</span>
+                                <span className="team-logo-frame">
+                                    <img
+                                        alt="Datalino"
+                                        height={1254}
+                                        src="/images/datalino-logo.png"
+                                        width={1254}
+                                    />
+                                </span>
+                            </div>
                         </footer>
                     </div>
                 </main>
