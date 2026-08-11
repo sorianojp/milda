@@ -1593,7 +1593,7 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
             'Universidad de los Andes',
             '14',
             '24',
-            '510',
+            '540',
         ],
     ];
 
@@ -1615,7 +1615,7 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
                         </div>
                         <select aria-label="Institution filter">
                             <option>All Institutions</option>
-                            <option>University of Toronto</option>
+                            <option>Universidad de Dagupan</option>
                         </select>
                     </div>
 
@@ -1705,7 +1705,7 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
                         <span className="podium-avatar">NM</span>
                         <div>
                             <strong>Nicole Martin</strong>
-                            <small>University of California, Berkeley</small>
+                            <small>Universidad de Dagupan</small>
                         </div>
                         <div>
                             <small>Trusted Sources</small>
@@ -1717,7 +1717,7 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
                         </div>
                         <div>
                             <small>Score</small>
-                            <strong>820</strong>
+                            <strong>510</strong>
                         </div>
                         <p>
                             50 points
@@ -1760,7 +1760,7 @@ function LeaderboardView({ openPolicy }: { openPolicy: () => void }) {
                         </span>
                         <div>
                             <h3>Top Institution</h3>
-                            <strong>University of Toronto</strong>
+                            <strong>Universidad de Dagupan</strong>
                             <p>
                                 12,450 points
                                 <br />
